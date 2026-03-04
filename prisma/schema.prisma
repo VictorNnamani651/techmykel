@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  REFERRER
+}
+
+enum RewardType {
+  CASH
+  AIRTIME
+  DATA
+}
+
+enum ReferralStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+}
+
+enum RedemptionStatus {
+  REQUESTED
+  FULFILLED
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id          String     @id @default(uuid())
+  phoneNumber String     @unique
+  role        Role       @default(REFERRER)
+  referrals   Referral[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model RewardConfig {
+  id         String     @id @default(uuid())
+  title      String
+  rewardType RewardType
+  value      Int
+  isActive   Boolean    @default(true)
+  referrals  Referral[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Referral {
+  id             String         @id @default(uuid())
+  referrerId     String
+  referrer       User           @relation(fields: [referrerId], references: [id])
+  customerName   String
+  customerPhone  String?
+  rewardConfigId String
+  rewardConfig   RewardConfig   @relation(fields: [rewardConfigId], references: [id])
+  status         ReferralStatus @default(PENDING)
+  redemption     Redemption?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Redemption {
+  id         String           @id @default(uuid())
+  referralId String           @unique
+  referral   Referral         @relation(fields: [referralId], references: [id])
+  status     RedemptionStatus @default(REQUESTED)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
