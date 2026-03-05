@@ -2,24 +2,37 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Home, ClipboardList, Gift, CheckCircle } from "lucide-react";
 
 interface NavItem {
   href: string;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const adminNav: NavItem[] = [
-  { href: "/admin", label: "Home", icon: "🏠" },
-  { href: "/admin/referrals", label: "Referrals", icon: "📋" },
-  { href: "/admin/rewards", label: "Rewards", icon: "🎁" },
-  { href: "/admin/redemptions", label: "Redeem Q", icon: "✅" },
+  { href: "/admin", label: "Home", icon: <Home size={20} /> },
+  {
+    href: "/admin/referrals",
+    label: "Referrals",
+    icon: <ClipboardList size={20} />,
+  },
+  { href: "/admin/rewards", label: "Rewards", icon: <Gift size={20} /> },
+  {
+    href: "/admin/redemptions",
+    label: "Redeem Q",
+    icon: <CheckCircle size={20} />,
+  },
 ];
 
 const referrerNav: NavItem[] = [
-  { href: "/dashboard", label: "Home", icon: "🏠" },
-  { href: "/dashboard/referrals", label: "Referrals", icon: "📋" },
-  { href: "/dashboard/redeem", label: "Redeem", icon: "🎁" },
+  { href: "/dashboard", label: "Home", icon: <Home size={20} /> },
+  {
+    href: "/dashboard/referrals",
+    label: "Referrals",
+    icon: <ClipboardList size={20} />,
+  },
+  { href: "/dashboard/redeem", label: "Redeem", icon: <Gift size={20} /> },
 ];
 
 interface BottomNavProps {
@@ -69,13 +82,12 @@ export default function BottomNav({ role }: BottomNavProps) {
               borderRadius: "var(--radius-sm)",
               transition: "all 0.2s ease",
               minWidth: 56,
+              color: isActive ? "var(--ocean)" : "var(--text-muted)",
             }}
           >
             <span
               style={{
-                fontSize: "1.4rem",
                 lineHeight: 1,
-                filter: isActive ? "none" : "grayscale(0.3) opacity(0.6)",
                 transform: isActive ? "scale(1.15)" : "scale(1)",
                 transition: "transform 0.2s ease",
               }}

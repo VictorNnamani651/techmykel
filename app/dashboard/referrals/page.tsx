@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { requestRedemption } from "@/app/actions";
+import {
+  Banknote,
+  RadioTower,
+  Wifi,
+  Inbox,
+  Gift,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
 
 export const metadata = { title: "My Referrals — RefReward" };
 
@@ -19,10 +28,10 @@ export default async function ReferrerReferralsPage() {
     },
   });
 
-  const rewardTypeIcon: Record<string, string> = {
-    CASH: "💵",
-    AIRTIME: "📡",
-    DATA: "📶",
+  const rewardTypeIcon: Record<string, React.ReactNode> = {
+    CASH: <Banknote size={20} />,
+    AIRTIME: <RadioTower size={20} />,
+    DATA: <Wifi size={20} />,
   };
 
   const statusBadge: Record<string, string> = {
@@ -62,7 +71,7 @@ export default async function ReferrerReferralsPage() {
         <h1
           style={{ fontSize: "1.5rem", fontWeight: 800, margin: "0.5rem 0 0" }}
         >
-          My Referrals 📋
+          My Referrals
         </h1>
         <p style={{ marginTop: "0.3rem", fontSize: "0.875rem", opacity: 0.75 }}>
           {referrals.length} referral{referrals.length !== 1 ? "s" : ""} total
@@ -79,7 +88,17 @@ export default async function ReferrerReferralsPage() {
               color: "var(--text-muted)",
             }}
           >
-            <p style={{ fontSize: "2rem", margin: 0 }}>📭</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "0.5rem",
+                color: "var(--ocean)",
+                opacity: 0.5,
+              }}
+            >
+              <Inbox size={32} />
+            </div>
             <p style={{ marginTop: "0.5rem" }}>No referrals yet.</p>
             <p style={{ fontSize: "0.8125rem", marginTop: "0.25rem" }}>
               Contact your admin to get started.
@@ -192,9 +211,16 @@ export default async function ReferrerReferralsPage() {
                         gap: "0.4rem",
                       }}
                     >
-                      {r.redemption!.status === "FULFILLED"
-                        ? "🎉 Reward disbursed!"
-                        : "⏳ Redemption requested — admin will fulfill soon"}
+                      {r.redemption!.status === "FULFILLED" ? (
+                        <>
+                          <CheckCircle size={16} /> Reward disbursed!
+                        </>
+                      ) : (
+                        <>
+                          <Clock size={16} /> Redemption requested — admin will
+                          fulfill soon
+                        </>
+                      )}
                     </div>
                   )}
 
@@ -204,8 +230,17 @@ export default async function ReferrerReferralsPage() {
                       action={requestRedemption.bind(null, r.id)}
                       style={{ marginTop: "0.75rem" }}
                     >
-                      <button type="submit" className="btn-primary">
-                        🎁 Request Reward
+                      <button
+                        type="submit"
+                        className="btn-primary"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.4rem",
+                        }}
+                      >
+                        <Gift size={18} /> Request Reward
                       </button>
                     </form>
                   )}

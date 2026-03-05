@@ -2,6 +2,16 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import {
+  Users,
+  ClipboardList,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Gift,
+  Plus,
+  Inbox,
+} from "lucide-react";
 
 export const metadata = { title: "Admin Dashboard — RefReward" };
 
@@ -81,7 +91,7 @@ export default async function AdminDashboard() {
             fontWeight: 500,
           }}
         >
-          Welcome back, Admin 👋
+          Welcome back, Admin
         </p>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
           Overview
@@ -105,37 +115,37 @@ export default async function AdminDashboard() {
           }}
         >
           <StatCard
-            emoji="👥"
+            icon={<Users size={24} />}
             label="Referrers"
             value={stats.totalReferrers}
             color="var(--navy)"
           />
           <StatCard
-            emoji="📋"
+            icon={<ClipboardList size={24} />}
             label="Total Referrals"
             value={stats.totalReferrals}
             color="var(--ocean)"
           />
           <StatCard
-            emoji="⏳"
+            icon={<Clock size={24} />}
             label="Pending"
             value={stats.pendingReferrals}
             color="#d97706"
           />
           <StatCard
-            emoji="✅"
+            icon={<CheckCircle size={24} />}
             label="Successful"
             value={stats.successfulReferrals}
             color="#16a34a"
           />
           <StatCard
-            emoji="❌"
+            icon={<XCircle size={24} />}
             label="Failed"
             value={stats.failedReferrals}
             color="#dc2626"
           />
           <StatCard
-            emoji="🎁"
+            icon={<Gift size={24} />}
             label="Redeem Queue"
             value={stats.pendingRedemptions}
             color="var(--sky)"
@@ -155,23 +165,23 @@ export default async function AdminDashboard() {
         >
           <ActionButton
             href="/admin/referrals/new"
-            emoji="➕"
+            icon={<Plus size={22} />}
             label="New Referral"
             primary
           />
           <ActionButton
             href="/admin/rewards"
-            emoji="🎁"
+            icon={<Gift size={22} />}
             label="Manage Rewards"
           />
           <ActionButton
             href="/admin/referrals"
-            emoji="📋"
+            icon={<ClipboardList size={22} />}
             label="All Referrals"
           />
           <ActionButton
             href="/admin/redemptions"
-            emoji="✅"
+            icon={<CheckCircle size={22} />}
             label="Redemptions"
           />
         </div>
@@ -202,7 +212,7 @@ export default async function AdminDashboard() {
         </div>
 
         {stats.recentReferrals.length === 0 ? (
-          <EmptyState message="No referrals yet. Create your first one!" />
+          <EmptyState />
         ) : (
           <div
             style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
@@ -263,13 +273,13 @@ export default async function AdminDashboard() {
 /* ── Sub-components ── */
 
 function StatCard({
-  emoji,
+  icon,
   label,
   value,
   color,
   urgent,
 }: {
-  emoji: string;
+  icon: React.ReactNode;
   label: string;
   value: number;
   color: string;
@@ -297,7 +307,7 @@ function StatCard({
           }}
         />
       )}
-      <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>{emoji}</div>
+      <div style={{ color, marginBottom: "0.5rem" }}>{icon}</div>
       <div
         style={{ fontSize: "1.75rem", fontWeight: 800, color, lineHeight: 1 }}
       >
@@ -319,12 +329,12 @@ function StatCard({
 
 function ActionButton({
   href,
-  emoji,
+  icon,
   label,
   primary,
 }: {
   href: string;
-  emoji: string;
+  icon: React.ReactNode;
   label: string;
   primary?: boolean;
 }) {
@@ -345,14 +355,14 @@ function ActionButton({
           boxShadow: primary ? "var(--shadow-md)" : "var(--shadow-sm)",
           transition: "transform 0.15s ease",
           cursor: "pointer",
+          color: primary ? "#fff" : "var(--text-primary)",
         }}
       >
-        <span style={{ fontSize: "1.5rem" }}>{emoji}</span>
+        {icon}
         <span
           style={{
             fontSize: "0.75rem",
             fontWeight: 700,
-            color: primary ? "#fff" : "var(--text-primary)",
             textAlign: "center",
             lineHeight: 1.3,
           }}
@@ -364,7 +374,7 @@ function ActionButton({
   );
 }
 
-function EmptyState({ message }: { message: string }) {
+function EmptyState() {
   return (
     <div
       className="card"
@@ -374,8 +384,20 @@ function EmptyState({ message }: { message: string }) {
         color: "var(--text-muted)",
       }}
     >
-      <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📭</div>
-      <p style={{ fontSize: "0.9rem", margin: 0 }}>{message}</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "0.75rem",
+          color: "var(--ocean)",
+          opacity: 0.4,
+        }}
+      >
+        <Inbox size={40} />
+      </div>
+      <p style={{ fontSize: "0.9rem", margin: 0 }}>
+        No referrals yet. Create your first one!
+      </p>
     </div>
   );
 }

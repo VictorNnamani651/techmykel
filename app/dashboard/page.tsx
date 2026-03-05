@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { ClipboardList, CheckCircle, Clock, Gift, Inbox } from "lucide-react";
 
 export const metadata = { title: "My Dashboard — RefReward" };
 
@@ -110,7 +111,7 @@ export default async function ReferrerDashboard() {
             fontWeight: 500,
           }}
         >
-          Welcome back 👋
+          Welcome back
         </p>
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>
           My Dashboard
@@ -136,7 +137,9 @@ export default async function ReferrerDashboard() {
             fontWeight: 600,
           }}
         >
-          <span>✅</span>
+          <span style={{ display: "flex", alignItems: "center" }}>
+            <CheckCircle size={15} />
+          </span>
           <span>
             {stats.successful} Successful Referral
             {stats.successful !== 1 ? "s" : ""}
@@ -156,25 +159,25 @@ export default async function ReferrerDashboard() {
           }}
         >
           <StatCard
-            emoji="📋"
+            icon={<ClipboardList size={24} />}
             label="Total Referrals"
             value={stats.total}
             color="var(--ocean)"
           />
           <StatCard
-            emoji="✅"
+            icon={<CheckCircle size={24} />}
             label="Successful"
             value={stats.successful}
             color="#16a34a"
           />
           <StatCard
-            emoji="⏳"
+            icon={<Clock size={24} />}
             label="Pending"
             value={stats.pending}
             color="#d97706"
           />
           <StatCard
-            emoji="🎁"
+            icon={<Gift size={24} />}
             label="Awaiting Reward"
             value={stats.pendingRedemptions}
             color="var(--sky)"
@@ -199,7 +202,7 @@ export default async function ReferrerDashboard() {
             >
               <div>
                 <p style={{ fontWeight: 700, fontSize: "1rem", margin: 0 }}>
-                  Claim Your Reward 🎉
+                  Claim Your Reward
                 </p>
                 <p
                   style={{
@@ -211,7 +214,11 @@ export default async function ReferrerDashboard() {
                   You have successful referrals. Tap to redeem.
                 </p>
               </div>
-              <span style={{ fontSize: "1.75rem", marginLeft: "1rem" }}>→</span>
+              <span
+                style={{ color: "#fff", display: "flex", alignItems: "center" }}
+              >
+                <CheckCircle size={16} />
+              </span>
             </div>
           </Link>
         )}
@@ -250,7 +257,17 @@ export default async function ReferrerDashboard() {
               color: "var(--text-muted)",
             }}
           >
-            <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📭</div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "0.75rem",
+                color: "var(--ocean)",
+                opacity: 0.4,
+              }}
+            >
+              <Inbox size={40} />
+            </div>
             <p style={{ fontSize: "0.9rem", margin: 0 }}>
               You haven&apos;t made any referrals yet.
             </p>
@@ -318,7 +335,7 @@ export default async function ReferrerDashboard() {
                         >
                           ·{" "}
                           {r.redemption.status === "FULFILLED"
-                            ? "Reward sent ✓"
+                            ? "Reward sent"
                             : "Redemption pending"}
                         </span>
                       )}
@@ -339,19 +356,19 @@ export default async function ReferrerDashboard() {
 
 /* ── Stat card ── */
 function StatCard({
-  emoji,
+  icon,
   label,
   value,
   color,
 }: {
-  emoji: string;
+  icon: React.ReactNode;
   label: string;
   value: number;
   color: string;
 }) {
   return (
     <div className="card">
-      <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>{emoji}</div>
+      <div style={{ color, marginBottom: "0.5rem" }}>{icon}</div>
       <div
         style={{ fontSize: "1.75rem", fontWeight: 800, color, lineHeight: 1 }}
       >

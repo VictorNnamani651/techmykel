@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { fulfillRedemption } from "@/app/actions";
+import { Banknote, RadioTower, Wifi, CheckCircle, Gift } from "lucide-react";
 
 export const metadata = { title: "Redemption Queue — RefReward" };
 
@@ -39,10 +40,10 @@ export default async function RedemptionsPage() {
     },
   });
 
-  const rewardTypeIcon: Record<string, string> = {
-    CASH: "💵",
-    AIRTIME: "📡",
-    DATA: "📶",
+  const rewardTypeIcon: Record<string, React.ReactNode> = {
+    CASH: <Banknote size={20} />,
+    AIRTIME: <RadioTower size={20} />,
+    DATA: <Wifi size={20} />,
   };
 
   return (
@@ -70,7 +71,7 @@ export default async function RedemptionsPage() {
         <h1
           style={{ fontSize: "1.5rem", fontWeight: 800, margin: "0.5rem 0 0" }}
         >
-          Redemption Queue ✅
+          Redemption Queue
         </h1>
         <p style={{ marginTop: "0.3rem", fontSize: "0.875rem", opacity: 0.75 }}>
           {requested.length} pending request{requested.length !== 1 ? "s" : ""}
@@ -108,7 +109,17 @@ export default async function RedemptionsPage() {
               marginBottom: "1.5rem",
             }}
           >
-            <p style={{ fontSize: "2rem", margin: 0 }}>🎉</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "0.5rem",
+                color: "var(--ocean)",
+                opacity: 0.5,
+              }}
+            >
+              <Gift size={32} />
+            </div>
             <p style={{ margin: "0.5rem 0 0" }}>
               All caught up! No pending redemptions.
             </p>
@@ -187,8 +198,17 @@ export default async function RedemptionsPage() {
                   </div>
                 </div>
                 <form action={fulfillRedemption.bind(null, rd.id)}>
-                  <button type="submit" className="btn-primary">
-                    ✅ Mark as Fulfilled
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.4rem",
+                    }}
+                  >
+                    <CheckCircle size={18} /> Mark as Fulfilled
                   </button>
                 </form>
               </div>
@@ -245,7 +265,16 @@ export default async function RedemptionsPage() {
                       {rd.referral.rewardConfig.title}
                     </p>
                   </div>
-                  <span className="badge badge-fulfilled">Fulfilled ✓</span>
+                  <span
+                    className="badge badge-fulfilled"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.25rem",
+                    }}
+                  >
+                    <CheckCircle size={14} /> Fulfilled
+                  </span>
                 </div>
               ))}
             </div>
