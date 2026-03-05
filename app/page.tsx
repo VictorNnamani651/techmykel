@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default function Home() {
-  redirect("/login");
-}
+// Root route — renders the login page directly (no redirect needed)
+export { default } from "@/app/login/page";
