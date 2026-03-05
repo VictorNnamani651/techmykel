@@ -15,11 +15,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       name: "Phone Number",
       credentials: {
         phoneNumber: { label: "Phone Number", type: "tel" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         const phone = credentials?.phoneNumber as string | undefined;
+        const password = credentials?.password as string | undefined;
 
-        if (!phone) return null;
+        if (!phone || !password) return null;
 
         // Look up the user by phone number in the database
         const user = await prisma.user.findUnique({
@@ -27,6 +29,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (!user) return null;
+
+        // Verify the provided password against the stored hash
+        const bcrypt = require("bcryptjs");
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) return null;
 
         // Return a plain object — NextAuth will persist this in the JWT
         return {

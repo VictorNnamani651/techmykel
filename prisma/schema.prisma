@@ -35,6 +35,7 @@ enum RedemptionStatus {
 model User {
   id          String     @id @default(uuid())
   phoneNumber String     @unique
+  password    String
   role        Role       @default(REFERRER)
   referrals   Referral[]
   createdAt   DateTime   @default(now())
