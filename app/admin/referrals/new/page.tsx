@@ -151,7 +151,7 @@ export default async function NewReferralPage() {
                     gap: "0.5rem",
                   }}
                 >
-                  {activeRewards.map((rw) => (
+                  {activeRewards.map((rw: any) => (
                     <label
                       key={rw.id}
                       style={{

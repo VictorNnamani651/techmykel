@@ -122,7 +122,7 @@ export default async function RewardsPage() {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
           >
-            {rewards.map((r) => (
+            {rewards.map((r: any) => (
               <div
                 key={r.id}
                 className="card"

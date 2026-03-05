@@ -268,7 +268,7 @@ export default async function ReferrerDashboard() {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
           >
-            {stats.recentReferrals.map((r) => (
+            {stats.recentReferrals.map((r: any) => (
               <Link
                 key={r.id}
                 href={`/dashboard/referrals`}

@@ -93,7 +93,7 @@ export default async function ReferrerReferralsPage() {
               gap: "0.875rem",
             }}
           >
-            {referrals.map((r) => {
+            {referrals.map((r: any) => {
               const canRedeem = r.status === "SUCCESSFUL" && !r.redemption;
               const redeemed = !!r.redemption;
 

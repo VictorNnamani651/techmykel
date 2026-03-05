@@ -122,7 +122,7 @@ export default async function RedemptionsPage() {
               marginBottom: "1.5rem",
             }}
           >
-            {requested.map((rd) => (
+            {requested.map((rd: any) => (
               <div
                 key={rd.id}
                 className="card"
@@ -207,7 +207,7 @@ export default async function RedemptionsPage() {
                 gap: "0.75rem",
               }}
             >
-              {fulfilled.map((rd) => (
+              {fulfilled.map((rd: any) => (
                 <div
                   key={rd.id}
                   className="card"

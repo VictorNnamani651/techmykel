@@ -85,7 +85,7 @@ export default async function AdminReferralsPage() {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
           >
-            {referrals.map((r) => (
+            {referrals.map((r: any) => (
               <Link
                 key={r.id}
                 href={`/admin/referrals/${r.id}`}
