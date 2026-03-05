@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
-import type { Role } from "@prisma/client";
+
+type Role = "ADMIN" | "REFERRER";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
