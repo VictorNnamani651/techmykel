@@ -1,0 +1,5 @@
+# Per-referral admin-set reward amount, not a versioned global config
+
+The original overview described a global, versioned reward configuration (three preset amounts) that is snapshotted onto each referral at verification. We dropped that. Instead, the **Admin sets a single whole-naira Reward Amount directly on each referral** when verifying it (moving it to Pending); it is visible to the Referrer immediately. The Admin may edit it while the referral is still Pending, but it **locks once the referral becomes Successful** (so an earned, redeemable reward can't be quietly reduced). Every edit is written to the append-only audit log.
+
+This removes the versioning/snapshot machinery entirely and lets the owner size each reward to the job (a big repair can earn more than a small one). The Reward Type (cash / airtime / data) is purely a delivery form chosen by the Referrer at redemption and does not change the amount — "data" means data worth the Reward Amount. Trade-off: there is no longer a single place that defines "the standard reward," so consistency across referrals depends on the Admin's discretion rather than a configured default.

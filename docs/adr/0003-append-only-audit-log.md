@@ -1,0 +1,5 @@
+# Single append-only audit log, doubling as per-entity status history
+
+Accountability and dispute resolution are core to this product. We keep one **append-only, immutable** `audit_log` table: every referral/redemption state transition, the Admin's amount-setting, and referral creation writes a row `{ actor, action, entityType, entityId, fromState, toState, metadata, timestamp }`. Rows are never updated or deleted, by anyone — that immutability is the entire value for resolving "who did what when" disputes.
+
+Per-referral/per-redemption **status history** is not a separate table; it is this same log filtered to one entity. The Admin sees the full system-wide log; Referrers see only the filtered timelines of their own entities. Current status is still stored on the referral/redemption rows themselves for cheap querying — the log is the authoritative history, not the live-state source. Logins and notification-sends are deliberately out of scope for V1 logging to keep the trail money-and-dispute focused.

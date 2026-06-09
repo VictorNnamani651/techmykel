@@ -1,0 +1,5 @@
+# Referred customer embedded on the referral; no Customers table
+
+The overview lists Customers as its own table, but a referred customer is referrable exactly once, ever (regardless of outcome), so they map 1:1 to a single referral with no independent identity, history, or account. We therefore **store the referred customer as `referredName` + `referredPhone` columns on the referral** and enforce the "once ever" rule with a **unique index on `referredPhone`** across all referrals — the guarantee lives exactly where it is checked.
+
+Consequence: there is no standalone `customers` table in V1. The admin's verification workflow is "search referrals by referred phone (name as fallback), confirm the named referrer, set the reward amount, move to Pending" — there is no separate step to select a referrer, because the referral already carries one. If a future version allows repeat referrals or customer profiles, that is when a Customers table earns its place; reintroducing it would be a migration.
