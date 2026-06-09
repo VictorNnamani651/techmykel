@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Referrals - PhoneFix Rewards</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#b4c5ff",
+                        "bg-dark-mode": "#020617",
+                        "border-dark": "#1E293B",
+                        "on-background": "#131b2e",
+                        "tertiary-fixed": "#ffdea5",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#1d3989",
+                        "status-successful": "#10B981",
+                        "inverse-surface": "#283044",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary-container": "#8fa7fe",
+                        "secondary-fixed-dim": "#b6c4ff",
+                        "surface": "#faf8ff",
+                        "on-surface": "#131b2e",
+                        "primary-container": "#2563eb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary-fixed-variant": "#264191",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "tertiary": "#6f4f00",
+                        "secondary-fixed": "#dce1ff",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#00164e",
+                        "status-pending": "#F59E0B",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface-dim": "#d2d9f4",
+                        "on-surface-variant": "#434655",
+                        "background": "#faf8ff",
+                        "surface-container-high": "#e2e7ff",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-container": "#eeefff",
+                        "primary": "#004ac6",
+                        "on-error-container": "#93000a",
+                        "outline": "#737686",
+                        "on-primary-fixed": "#00174b",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#dae2fd",
+                        "secondary": "#4059aa",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-tint": "#0053db",
+                        "surface-container-highest": "#dae2fd",
+                        "tertiary-container": "#8e6600",
+                        "status-rejected": "#EF4444",
+                        "status-unverified": "#71717A",
+                        "border-light": "#E2E8F0",
+                        "bg-main": "#F8FAFC",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "tertiary-fixed-dim": "#febb14",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "text-secondary": "#64748B",
+                        "on-tertiary-fixed": "#271900",
+                        "status-requested": "#3B82F6",
+                        "surface-container": "#eaedff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ffeed5",
+                        "surface-container-low": "#f2f3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max-width": "1280px",
+                        "stack-lg": "2rem",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1.5rem",
+                        "stack-md": "1rem",
+                        "margin-desktop": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Geist", "sans-serif"],
+                        "headline-lg-mobile": ["Geist", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "caption": ["Inter", "sans-serif"],
+                        "label-uppercase": ["Inter", "sans-serif"],
+                        "headline-lg": ["Geist", "sans-serif"],
+                        "headline-md": ["Geist", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "label-uppercase": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Geist', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-bg-main text-on-background min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="sticky top-0 w-full z-40 bg-surface dark:bg-bg-dark-mode border-b border-border-light dark:border-border-dark flex justify-between items-center px-margin-mobile py-stack-md">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-sm text-headline-sm">U</div>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed-dim">My Referrals</span>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low transition-all active:opacity-80 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</header>
+<main class="max-w-container-max-width mx-auto px-margin-mobile pt-stack-md flex flex-col gap-stack-md">
+<!-- Filter Chips -->
+<div class="overflow-x-auto hide-scrollbar -mx-margin-mobile px-margin-mobile pb-2 flex gap-2">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-primary text-on-primary font-caption text-caption transition-colors">All</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface border border-border-light text-on-surface-variant hover:bg-surface-container-low font-caption text-caption transition-colors">Unverified</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface border border-border-light text-on-surface-variant hover:bg-surface-container-low font-caption text-caption transition-colors">Pending</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface border border-border-light text-on-surface-variant hover:bg-surface-container-low font-caption text-caption transition-colors">Successful</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface border border-border-light text-on-surface-variant hover:bg-surface-container-low font-caption text-caption transition-colors">Failed</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface border border-border-light text-on-surface-variant hover:bg-surface-container-low font-caption text-caption transition-colors">Rejected</button>
+</div>
+<!-- Referral Cards List -->
+<div class="flex flex-col gap-3">
+<!-- Pending Card -->
+<div class="bg-surface border border-border-light rounded-xl p-4 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)] flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Sarah Jenkins</h3>
+<p class="font-body-md text-body-md text-text-secondary mt-0.5">0801 *** ****</p>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-status-pending/10 text-status-pending font-label-uppercase text-label-uppercase">Pending</div>
+</div>
+<div class="flex justify-between items-center pt-3 border-t border-border-light/50">
+<span class="font-caption text-caption text-text-secondary">Oct 24, 2023</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">£50.00</span>
+</div>
+</div>
+<!-- Successful Card -->
+<div class="bg-surface border border-border-light rounded-xl p-4 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)] flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Michael Thorne</h3>
+<p class="font-body-md text-body-md text-text-secondary mt-0.5">0801 *** ****</p>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-status-successful/10 text-status-successful font-label-uppercase text-label-uppercase">Successful</div>
+</div>
+<div class="flex justify-between items-center pt-3 border-t border-border-light/50">
+<span class="font-caption text-caption text-text-secondary">Oct 20, 2023</span>
+<span class="font-headline-sm text-headline-sm text-status-successful">+£100.00</span>
+</div>
+</div>
+<!-- Unverified Card -->
+<div class="bg-surface border border-border-light rounded-xl p-4 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)] flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Elena Rostova</h3>
+<p class="font-body-md text-body-md text-text-secondary mt-0.5">0801 *** ****</p>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-status-unverified/10 text-status-unverified font-label-uppercase text-label-uppercase">Unverified</div>
+</div>
+<div class="flex justify-between items-center pt-3 border-t border-border-light/50">
+<span class="font-caption text-caption text-text-secondary">Oct 18, 2023</span>
+<span class="font-headline-sm text-headline-sm text-text-secondary">--</span>
+</div>
+</div>
+<!-- Rejected Card -->
+<div class="bg-surface border border-border-light rounded-xl p-4 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.02)] flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">David Kim</h3>
+<p class="font-body-md text-body-md text-text-secondary mt-0.5">0801 *** ****</p>
+</div>
+<div class="px-2.5 py-1 rounded-full bg-status-rejected/10 text-status-rejected font-label-uppercase text-label-uppercase">Rejected</div>
+</div>
+<div class="flex justify-between items-center pt-3 border-t border-border-light/50">
+<span class="font-caption text-caption text-text-secondary">Oct 15, 2023</span>
+<span class="font-headline-sm text-headline-sm text-text-secondary line-through">£50.00</span>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-24 right-4 z-40 bg-primary text-on-primary rounded-xl px-4 py-3 shadow-[0_8px_16px_-4px_rgba(37,99,235,0.3)] flex items-center gap-2 hover:bg-on-primary-fixed-variant transition-colors active:scale-95 duration-150 md:hidden">
+<span class="material-symbols-outlined" data-icon="add" data-weight="fill" style="font-variation-settings: 'FILL' 1;">add</span>
+<span class="font-headline-sm text-headline-sm">New</span>
+</button>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface dark:bg-bg-dark-mode shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border-t border-border-light dark:border-border-dark flex justify-around items-center px-margin-mobile py-2 pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-variant/50 transition-colors active:scale-95 duration-150 p-2 rounded-xl min-w-[64px]" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-uppercase text-label-uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed-dim bg-secondary-container/20 rounded-xl px-4 py-2 hover:bg-surface-variant/50 transition-colors active:scale-95 duration-150 min-w-[64px]" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-uppercase text-label-uppercase">Referrals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-variant/50 transition-colors active:scale-95 duration-150 p-2 rounded-xl min-w-[64px]" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="redeem">redeem</span>
+<span class="font-label-uppercase text-label-uppercase">Redeem</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-variant/50 transition-colors active:scale-95 duration-150 p-2 rounded-xl min-w-[64px]" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="notifications">notifications</span>
+<span class="font-label-uppercase text-label-uppercase">Alerts</span>
+</a>
+</nav>
+</body></html>
