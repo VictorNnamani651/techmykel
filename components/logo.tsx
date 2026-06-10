@@ -1,17 +1,24 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/components/ui";
 
-// The Techmykel mark: white lowercase "m" in a royal-blue rounded square.
-export function LogoMark({ className }: { className?: string }) {
+// The Techmykel mark: the brand "m" icon (transparent PNG extracted from the logo).
+export function LogoMark({
+  className,
+  px = 36,
+}: {
+  className?: string;
+  px?: number;
+}) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center justify-center rounded-lg bg-brand font-bold text-white",
-        className,
-      )}
-    >
-      m
-    </span>
+    <Image
+      src="/techmykel-mark.png"
+      alt="Techmykel logo"
+      width={px}
+      height={px}
+      priority
+      className={cn("object-contain", className)}
+    />
   );
 }
 
@@ -26,11 +33,11 @@ export function Logo({
   showWordmark?: boolean;
   onBrand?: boolean;
 }) {
-  const mark = size === "sm" ? "h-7 w-7 text-base" : "h-9 w-9 text-xl";
+  const px = size === "sm" ? 28 : 36;
   const word = size === "sm" ? "text-lg" : "text-xl";
   return (
     <Link href={href} className="inline-flex items-center gap-2">
-      <LogoMark className={mark} />
+      <LogoMark px={px} />
       {showWordmark && (
         <span
           className={cn(
