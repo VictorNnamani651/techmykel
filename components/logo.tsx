@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/components/ui";
 
+
 // The Techmykel mark: the brand "m" icon (transparent PNG extracted from the logo).
 export function LogoMark({
   className,
