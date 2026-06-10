@@ -3,7 +3,7 @@ import { cn, naira } from "@/components/ui";
 import { formatShortDate } from "@/lib/format";
 
 const META: Record<string, { label: string; color: string }> = {
-  "referral.created": { label: "Submitted", color: "bg-slate-300" },
+  "referral.created": { label: "Unverified", color: "bg-slate-300" },
   "referral.verified": { label: "Verified", color: "bg-info" },
   "referral.amount_edited": { label: "Reward updated", color: "bg-info" },
   "referral.successful": { label: "Successful", color: "bg-success" },

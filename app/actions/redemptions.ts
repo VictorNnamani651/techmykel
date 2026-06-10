@@ -1,7 +1,6 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { redemptions, referrals, users } from "@/lib/db/schema";
@@ -92,7 +91,7 @@ export async function redeemReferral(
     created.id,
   );
 
-  redirect("/redemptions");
+  redirect("/redemptions?toast=redemption_requested");
 }
 
 export async function cancelRedemption(formData: FormData): Promise<void> {
@@ -130,5 +129,5 @@ export async function cancelRedemption(formData: FormData): Promise<void> {
     toState: "cancelled",
   });
 
-  revalidatePath("/redemptions");
+  redirect("/redemptions?toast=redemption_cancelled");
 }

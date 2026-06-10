@@ -105,5 +105,5 @@ export async function createReferral(
   });
   await notifyAdmins(`New referral submitted: ${referredName}.`, created.id);
 
-  redirect(`/referrals/${created.id}`);
+  redirect(`/referrals/${created.id}?toast=referral_created`);
 }

@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/dal";
 import { getReferralForReferrer, getTimeline } from "@/lib/queries";
 import { BackHeader } from "@/components/back-header";
 import { Timeline } from "@/components/timeline";
+import { GuidanceBanner } from "@/components/guidance-banner";
 import { Badge, Card, naira } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { formatDate } from "@/lib/format";
@@ -48,6 +49,8 @@ export default async function ReferralDetailPage({
         )}
       </div>
 
+      <GuidanceBanner kind="referral" status={referral.status} />
+
       <Card className="p-5">
         <h3 className="border-b border-slate-100 pb-3 text-base font-semibold text-slate-900">
           Customer Details
@@ -73,13 +76,16 @@ export default async function ReferralDetailPage({
       </Card>
 
       {active && (
-        <Card className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <Icon name="redeem" className="text-[20px] text-brand" />
-            <span className="capitalize">Redemption — {active.rewardType}</span>
-          </div>
-          <Badge status={active.status} />
-        </Card>
+        <div className="space-y-3">
+          <Card className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <Icon name="redeem" className="text-[20px] text-brand" />
+              <span className="capitalize">Redemption — {active.rewardType}</span>
+            </div>
+            <Badge status={active.status} />
+          </Card>
+          <GuidanceBanner kind="redemption" status={active.status} />
+        </div>
       )}
 
       <Card className="p-5">
