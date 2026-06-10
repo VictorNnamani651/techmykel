@@ -274,34 +274,142 @@ export async function listAllRedemptions(opts: {
   return { rows, total: countRow?.c ?? 0, page, pageSize };
 }
 
-export async function listReferrers() {
-  const us = await db
-    .select()
+export async function listReferrers(
+  opts: { search?: string; page?: number; pageSize?: number } = {},
+) {
+  const page = Math.max(1, opts.page ?? 1);
+  const pageSize = opts.pageSize ?? 20;
+
+  const conds = [eq(users.role, "referrer")];
+  if (opts.search?.trim()) {
+    const s = opts.search.trim();
+    const digits = s.replace(/\D/g, "");
+    const ors = [ilike(users.fullName, `%${s}%`)];
+    if (digits) ors.push(ilike(users.phone, `%${digits}%`));
+    conds.push(or(...ors)!);
+  }
+  const where = and(...conds);
+
+  // Per-referrer counts aggregated in SQL (not in memory) so search + paging
+  // stay cheap as the referrer base grows.
+  const rows = await db
+    .select({
+      id: users.id,
+      fullName: users.fullName,
+      phone: users.phone,
+      createdAt: users.createdAt,
+      convertedFromReferralId: users.convertedFromReferralId,
+      total: sql<number>`count(${referrals.id})::int`,
+      successful: sql<number>`(count(*) filter (where ${referrals.status} = 'successful'))::int`,
+    })
     .from(users)
-    .where(eq(users.role, "referrer"))
-    .orderBy(desc(users.createdAt));
+    .leftJoin(referrals, eq(referrals.referrerId, users.id))
+    .where(where)
+    .groupBy(users.id)
+    .orderBy(desc(users.createdAt))
+    .limit(pageSize)
+    .offset((page - 1) * pageSize);
+
+  const [countRow] = await db
+    .select({ c: sql<number>`count(*)::int` })
+    .from(users)
+    .where(where);
+
+  return {
+    rows: rows.map((u) => ({
+      id: u.id,
+      fullName: u.fullName,
+      phone: u.phone,
+      createdAt: u.createdAt,
+      converted: !!u.convertedFromReferralId,
+      total: u.total,
+      successful: u.successful,
+    })),
+    total: countRow?.c ?? 0,
+    page,
+    pageSize,
+  };
+}
+
+export async function getReferrerForAdmin(id: string) {
+  const [user] = await db
+    .select({
+      id: users.id,
+      fullName: users.fullName,
+      phone: users.phone,
+      createdAt: users.createdAt,
+      convertedFromReferralId: users.convertedFromReferralId,
+    })
+    .from(users)
+    .where(and(eq(users.id, id), eq(users.role, "referrer")))
+    .limit(1);
+  if (!user) return null;
 
   const refs = await db
-    .select({ referrerId: referrals.referrerId, status: referrals.status })
-    .from(referrals);
+    .select({
+      id: referrals.id,
+      referredName: referrals.referredName,
+      referredPhone: referrals.referredPhone,
+      status: referrals.status,
+      rewardAmount: referrals.rewardAmount,
+      createdAt: referrals.createdAt,
+    })
+    .from(referrals)
+    .where(eq(referrals.referrerId, id))
+    .orderBy(desc(referrals.createdAt));
 
-  const stat = new Map<string, { total: number; successful: number }>();
-  for (const r of refs) {
-    const s = stat.get(r.referrerId) ?? { total: 0, successful: 0 };
-    s.total += 1;
-    if (r.status === "successful") s.successful += 1;
-    stat.set(r.referrerId, s);
+  const reds = await db
+    .select({
+      id: redemptions.id,
+      status: redemptions.status,
+      rewardType: redemptions.rewardType,
+      requestedAt: redemptions.requestedAt,
+      resolvedAt: redemptions.resolvedAt,
+      referredName: referrals.referredName,
+      amount: referrals.rewardAmount,
+    })
+    .from(redemptions)
+    .innerJoin(referrals, eq(redemptions.referralId, referrals.id))
+    .where(eq(referrals.referrerId, id))
+    .orderBy(desc(redemptions.requestedAt));
+
+  // Reward earned = amount on successful referrals; paid out = amount on
+  // fulfilled redemptions. Computed from the rows already fetched above.
+  const successfulRefs = refs.filter((r) => r.status === "successful");
+  const stats = {
+    total: refs.length,
+    successful: successfulRefs.length,
+    earned: successfulRefs.reduce((sum, r) => sum + (r.rewardAmount ?? 0), 0),
+    paidOut: reds
+      .filter((r) => r.status === "fulfilled")
+      .reduce((sum, r) => sum + (r.amount ?? 0), 0),
+  };
+
+  // Converted Referrer (ADR-0005): the referral whose referred_phone became
+  // this account's phone. Surfaced so the admin can jump back to its origin.
+  let convertedFrom: { id: string; referredName: string } | null = null;
+  if (user.convertedFromReferralId) {
+    const [orig] = await db
+      .select({ id: referrals.id, referredName: referrals.referredName })
+      .from(referrals)
+      .where(eq(referrals.id, user.convertedFromReferralId))
+      .limit(1);
+    convertedFrom = orig ?? null;
   }
 
-  return us.map((u) => ({
-    id: u.id,
-    fullName: u.fullName,
-    phone: u.phone,
-    createdAt: u.createdAt,
-    converted: !!u.convertedFromReferralId,
-    total: stat.get(u.id)?.total ?? 0,
-    successful: stat.get(u.id)?.successful ?? 0,
-  }));
+  return {
+    referrer: {
+      id: user.id,
+      fullName: user.fullName,
+      phone: user.phone,
+      createdAt: user.createdAt,
+      converted: !!user.convertedFromReferralId,
+    },
+    stats,
+    convertedFrom,
+    referrals: refs,
+    redemptions: reds,
+  };
 }
 
 export async function listAudit(opts: { page?: number; pageSize?: number }) {
