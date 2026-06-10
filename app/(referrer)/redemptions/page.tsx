@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/dal";
 import { getReferrerOverview, listRedemptionsForReferrer } from "@/lib/queries";
 import { cancelRedemption } from "@/app/actions/redemptions";
+import { GuidanceBanner } from "@/components/guidance-banner";
 import { Avatar, Badge, Card, EmptyState, naira } from "@/components/ui";
 import { Icon } from "@/components/icon";
 import { formatDate } from "@/lib/format";
@@ -80,9 +81,13 @@ export default async function RedemptionsPage() {
                   <Badge status={r.status} />
                 </div>
 
+                <div className="mt-3">
+                  <GuidanceBanner kind="redemption" status={r.status} />
+                </div>
+
                 {r.status === "declined" && r.declineReason && (
                   <p className="mt-3 rounded-lg bg-red-50 p-2.5 text-sm text-red-700">
-                    {r.declineReason}
+                    Reason: {r.declineReason}
                   </p>
                 )}
 

@@ -14,10 +14,12 @@ type VerifyResult =
   | { ok: false; reason: "no_code" | "expired" | "locked" | "mismatch"; message: string };
 
 // Generate a fresh code, store it hashed, and send it via the active SMS sender.
+// Returns whether the SMS actually went out so callers can report delivery
+// truthfully rather than assuming success.
 export async function createAndSendOtp(
   phone: string,
   purpose = "registration",
-): Promise<void> {
+): Promise<{ sent: boolean }> {
   // Invalidate any outstanding unconsumed codes for this phone+purpose.
   await db
     .delete(otpCodes)
@@ -37,10 +39,17 @@ export async function createAndSendOtp(
     expiresAt: new Date(Date.now() + OTP_TTL_MS),
   });
 
-  await getSmsSender().send(
-    phone,
-    `Your Techmykel verification code is ${code}. It expires in 10 minutes.`,
-  );
+  try {
+    await getSmsSender().send(
+      phone,
+      `Your Techmykel verification code is ${code}. It expires in 10 minutes.`,
+    );
+    return { sent: true };
+  } catch (err) {
+    // The code row stays; a later resend invalidates it and issues a new one.
+    console.error("OTP send failed:", err);
+    return { sent: false };
+  }
 }
 
 export async function verifyOtp(

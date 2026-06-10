@@ -62,8 +62,14 @@ export async function register(_prev: FormState, formData: FormData): Promise<Fo
     });
   }
 
-  await createAndSendOtp(phone, "registration");
-  redirect(`/register/verify?phone=${encodeURIComponent(phone)}`);
+  const { sent } = await createAndSendOtp(phone, "registration");
+  if (!sent) {
+    return {
+      error:
+        "We couldn't send your verification code. Please check the number and try again.",
+    };
+  }
+  redirect(`/register/verify?phone=${encodeURIComponent(phone)}&toast=code_sent`);
 }
 
 export async function verifyRegistration(
@@ -92,12 +98,17 @@ export async function verifyRegistration(
   redirect(home(user.role));
 }
 
-export async function resendRegistrationOtp(formData: FormData): Promise<void> {
+export async function resendRegistrationOtp(
+  formData: FormData,
+): Promise<{ sent: boolean }> {
   const phone = otpSchema.shape.phone.safeParse(formData.get("phone"));
-  if (phone.success) {
-    const [user] = await db.select().from(users).where(eq(users.phone, phone.data)).limit(1);
-    if (user && !user.phoneVerifiedAt) await createAndSendOtp(phone.data, "registration");
+  if (!phone.success) return { sent: false };
+  const [user] = await db.select().from(users).where(eq(users.phone, phone.data)).limit(1);
+  if (user && !user.phoneVerifiedAt) {
+    return await createAndSendOtp(phone.data, "registration");
   }
+  // Nothing pending to resend — don't alarm the user with a false failure.
+  return { sent: true };
 }
 
 export async function login(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -115,8 +126,13 @@ export async function login(_prev: FormState, formData: FormData): Promise<FormS
 
   // Phone never verified — push them through OTP before issuing a session.
   if (!user.phoneVerifiedAt) {
-    await createAndSendOtp(phone, "registration");
-    redirect(`/register/verify?phone=${encodeURIComponent(phone)}`);
+    const { sent } = await createAndSendOtp(phone, "registration");
+    if (!sent) {
+      return {
+        error: "We couldn't send your verification code. Please try again in a moment.",
+      };
+    }
+    redirect(`/register/verify?phone=${encodeURIComponent(phone)}&toast=code_sent`);
   }
 
   await createSession(user.id, user.role);

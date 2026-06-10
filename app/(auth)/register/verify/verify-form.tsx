@@ -98,12 +98,15 @@ export function VerifyForm({ phone }: { phone: string }) {
 }
 
 function ResendOtp({ phone }: { phone: string }) {
-  const [done, resend, sending] = useActionState<number, FormData>(
+  const [state, resend, sending] = useActionState<
+    { at: number; failed: boolean },
+    FormData
+  >(
     async (_prev, fd) => {
-      await resendRegistrationOtp(fd);
-      return Date.now();
+      const res = await resendRegistrationOtp(fd);
+      return { at: Date.now(), failed: !res.sent };
     },
-    0,
+    { at: 0, failed: false },
   );
 
   // Countdown derived from an anchor timestamp; ticking `now` avoids
@@ -115,11 +118,16 @@ function ResendOtp({ phone }: { phone: string }) {
     return () => clearInterval(t);
   }, []);
 
-  const anchor = done || start;
+  const anchor = state.at || start;
   const secs = Math.max(0, 30 - Math.floor((now - anchor) / 1000));
 
   return (
     <div className="text-center text-sm">
+      {state.failed && (
+        <p className="mb-2 text-xs text-red-600">
+          We couldn&apos;t send the code. Please try again in a moment.
+        </p>
+      )}
       {/* Nested actions can't share a parent form, so this is its own form. */}
       <form action={resend}>
         <input type="hidden" name="phone" value={phone} />
