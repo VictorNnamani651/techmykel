@@ -25,3 +25,49 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* ---- Marketing landing-page motion ---------------------------------- */
+/* Scroll-reveal: elements start lowered + transparent, then ease in when the
+   Reveal client component flips data-shown="true". A <noscript> fallback in the
+   root layout forces these visible when JS is disabled (progressive enhancement). */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+[data-reveal][data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Pure-CSS entrance for above-the-fold content (runs on first paint, no JS). */
+@keyframes mk-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+.mk-rise { animation: mk-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes mk-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.mk-float { animation: mk-float 6s ease-in-out infinite; }
+
+@keyframes mk-float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.mk-float-slow { animation: mk-float-slow 8s ease-in-out infinite; }
+
+/* Soft conic/blur "aurora" blobs behind the hero. */
+.mk-blob { filter: blur(60px); opacity: 0.55; }
+
+/* Respect users who prefer less motion: no float, reveal/entrance is instant. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .mk-rise { animation: none; }
+  .mk-float, .mk-float-slow { animation: none; }
+}
