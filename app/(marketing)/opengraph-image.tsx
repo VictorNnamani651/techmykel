@@ -22,8 +22,10 @@ export default async function OpengraphImage() {
           width: "100%",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
           justifyContent: "center",
-          padding: "80px",
+          textAlign: "center",
+          padding: "70px",
           background:
             "linear-gradient(135deg, #0052d6 0%, #004ac6 45%, #00214f 100%)",
           color: "white",
@@ -31,13 +33,13 @@ export default async function OpengraphImage() {
         }}
       >
         {/* Logo lockup */}
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={markSrc} width={104} height={104} alt="" />
+          <img src={markSrc} width={96} height={96} alt="" />
           <span
             style={{
-              marginLeft: "20px",
-              fontSize: "56px",
+              marginLeft: "18px",
+              fontSize: "52px",
               fontWeight: 700,
               letterSpacing: "-1px",
             }}
@@ -47,15 +49,22 @@ export default async function OpengraphImage() {
         </div>
 
         {/* Headline */}
-        <div style={{ display: "flex", flexDirection: "column", marginTop: "56px" }}>
-          <span style={{ fontSize: "92px", fontWeight: 700, lineHeight: 1.05 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "44px",
+          }}
+        >
+          <span style={{ fontSize: "94px", fontWeight: 700, lineHeight: 1.04 }}>
             Refer friends.
           </span>
           <span
             style={{
-              fontSize: "92px",
+              fontSize: "94px",
               fontWeight: 700,
-              lineHeight: 1.05,
+              lineHeight: 1.04,
               color: "#f5b301",
             }}
           >
@@ -66,8 +75,9 @@ export default async function OpengraphImage() {
         {/* Subline */}
         <span
           style={{
-            marginTop: "36px",
-            fontSize: "34px",
+            marginTop: "40px",
+            fontSize: "32px",
+            maxWidth: "900px",
             color: "rgba(255,255,255,0.85)",
           }}
         >
