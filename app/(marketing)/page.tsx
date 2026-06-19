@@ -47,6 +47,7 @@ export default function LandingPage() {
       <HowItWorks />
       <EarnYourWay />
       <TrustProof />
+      <BeforeAfter />
       <Services />
       <RepairCTA />
       <FinalCTA />
@@ -387,6 +388,92 @@ function StatTile({ value, label }: { value: React.ReactNode; label: string }) {
       </p>
       <p className="mt-1 text-sm text-white/75">{label}</p>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------- Before & after */
+
+const REPAIRS: { device: string; job: string; before: string; after: string }[] = [
+  {
+    device: "iPhone 13 Pro Max",
+    job: "Back-glass replacement",
+    before: "/marketing/ba-13promax-before.jpg",
+    after: "/marketing/ba-13promax-after.jpg",
+  },
+  {
+    device: "iPhone 12",
+    job: "Back-glass replacement",
+    before: "/marketing/ba-12-before.jpg",
+    after: "/marketing/ba-12-after.jpg",
+  },
+];
+
+function BeforeAfter() {
+  return (
+    <section id="work" className="bg-slate-50 py-20 sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand">
+            Our work
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Before &amp; after
+          </h2>
+          <p className="mt-4 text-base leading-7 text-slate-500">
+            Real repairs from our bench — shattered backs brought right back to
+            brand-new.
+          </p>
+        </Reveal>
+
+        <div className="mt-14 grid gap-6 lg:grid-cols-2">
+          {REPAIRS.map((r, i) => (
+            <Reveal key={r.device} delay={i * 120}>
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
+                <div className="relative grid grid-cols-2 gap-1 bg-slate-200">
+                  <figure className="relative aspect-[3/4] overflow-hidden">
+                    <Image
+                      src={r.before}
+                      alt={`${r.device} with a cracked back before repair`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      className="object-cover"
+                    />
+                    <span className="absolute left-3 top-3 rounded-full bg-slate-900/70 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur">
+                      Before
+                    </span>
+                  </figure>
+                  <figure className="relative aspect-[3/4] overflow-hidden">
+                    <Image
+                      src={r.after}
+                      alt={`${r.device} restored after repair at Techmykel`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      className="object-cover"
+                    />
+                    <span className="absolute right-3 top-3 rounded-full bg-success px-2.5 py-1 text-xs font-semibold text-white">
+                      After
+                    </span>
+                  </figure>
+                  {/* Transformation arrow over the seam */}
+                  <span className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-brand shadow-lg ring-1 ring-slate-200">
+                    <ArrowRight size={20} />
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-5">
+                  <div>
+                    <p className="font-bold text-slate-900">{r.device}</p>
+                    <p className="text-sm text-slate-500">{r.job}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-success">
+                    <CheckCircle2 size={16} /> Repaired
+                  </span>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
