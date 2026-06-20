@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Geist } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/toaster";
 import "./globals.css";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
         <Suspense>
           <Toaster />
         </Suspense>
+        <Analytics />
       </body>
     </html>
   );
