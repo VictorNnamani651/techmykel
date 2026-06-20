@@ -28,7 +28,7 @@ import { CountUp } from "@/components/marketing/count-up";
 export const metadata: Metadata = {
   title: "Techmykel — Refer friends, get paid",
   description:
-    "Send people to Techmykel for trusted phone repairs in Abakaliki and earn up to ₦4,000 per referral — in cash, airtime or data. Sign up free.",
+    "Send people to Techmykel for trusted phone repairs in Abakaliki and earn up to ₦4,000 per referral in cash, airtime or data. Sign up free.",
 };
 
 const WHATSAPP = "https://wa.me/2348142778625";
@@ -105,8 +105,8 @@ function Hero() {
           <div className="mk-rise" style={{ animationDelay: "160ms" }}>
             <p className="mx-auto mt-5 max-w-md text-base leading-7 text-white/80 lg:mx-0 lg:text-lg">
               Send people to Techmykel for phone repairs and earn{" "}
-              <span className="font-semibold text-white">up to ₦4,000</span> every
-              time — in cash, airtime or data.
+              <span className="font-semibold text-white">up to ₦4,000</span>{" "}
+              every time in cash, airtime or data.
             </p>
             <p className="mt-2 text-xs text-white/60">
               Actual reward depends on the repair.
@@ -119,7 +119,7 @@ function Hero() {
                 href="/register"
                 className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gold px-6 py-3.5 text-base font-bold text-brand-dark shadow-lg shadow-black/20 transition hover:brightness-105 active:scale-[0.98] sm:w-auto"
               >
-                Get started — it&apos;s free
+                Get started, it&apos;s free
                 <ArrowRight
                   size={18}
                   className="transition-transform group-hover:translate-x-0.5"
@@ -137,10 +137,12 @@ function Hero() {
           <div className="mk-rise" style={{ animationDelay: "320ms" }}>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/70 lg:justify-start">
               <span className="inline-flex items-center gap-1.5">
-                <ShieldCheck size={16} className="text-gold" /> Trusted since 2022
+                <ShieldCheck size={16} className="text-gold" /> Trusted since
+                2022
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 size={16} className="text-gold" /> 900+ devices repaired
+                <CheckCircle2 size={16} className="text-gold" /> 900+ devices
+                repaired
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <MapPin size={16} className="text-gold" /> Abakaliki
@@ -150,7 +152,10 @@ function Hero() {
         </div>
 
         {/* Glassmorphic "reward earned" mockup, layered over the repair photo. */}
-        <div className="mk-rise hidden lg:block" style={{ animationDelay: "200ms" }}>
+        <div
+          className="mk-rise hidden lg:block"
+          style={{ animationDelay: "200ms" }}
+        >
           <RewardMockup />
         </div>
       </div>
@@ -171,7 +176,9 @@ function RewardMockup() {
               <CheckCircle2 size={24} />
             </span>
             <div>
-              <p className="text-sm font-semibold text-slate-900">Reward ready</p>
+              <p className="text-sm font-semibold text-slate-900">
+                Reward ready
+              </p>
               <p className="text-xs text-slate-500">Referral successful</p>
             </div>
           </div>
@@ -262,7 +269,9 @@ function HowItWorks() {
                 <h3 className="mt-5 text-lg font-bold text-slate-900">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">{step.body}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  {step.body}
+                </p>
               </div>
             </Reveal>
           ))}
@@ -292,9 +301,9 @@ function EarnYourWay() {
             Earn your way
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-500">
-            Every successful referral earns one reward — up to{" "}
-            <span className="font-semibold text-slate-900">₦4,000</span>. You choose
-            how you collect it.
+            Every successful referral earns one reward, up to{" "}
+            <span className="font-semibold text-slate-900">₦4,000</span>. You
+            choose how you collect it.
           </p>
         </Reveal>
 
@@ -305,7 +314,9 @@ function EarnYourWay() {
                 <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-[#b97e00]">
                   <r.icon size={26} />
                 </span>
-                <h3 className="mt-5 text-lg font-bold text-slate-900">{r.title}</h3>
+                <h3 className="mt-5 text-lg font-bold text-slate-900">
+                  {r.title}
+                </h3>
                 <p className="mt-1.5 text-sm text-slate-500">{r.body}</p>
               </div>
             </Reveal>
@@ -340,16 +351,20 @@ function TrustProof() {
             The repairs you can vouch for
           </h2>
           <p className="mt-4 max-w-md text-base leading-7 text-white/80">
-            You can only earn by sending people somewhere good. Techmykel has been
-            fixing phones in Abakaliki since 2022 — fast, honest, and done right.
+            You can only earn by sending people somewhere good. Techmykel has
+            been fixing phones in Abakaliki since 2022 — fast, honest, and done
+            right.
           </p>
           <p className="mt-3 max-w-md text-base leading-7 text-white/80">
-            That trust is what makes referring easy: you already know they will be
-            looked after.
+            That trust is what makes referring easy: you already know they will
+            be looked after.
           </p>
 
           <div className="mt-8 grid grid-cols-2 gap-4">
-            <StatTile value={<CountUp value={900} suffix="+" />} label="Devices repaired" />
+            <StatTile
+              value={<CountUp value={900} suffix="+" />}
+              label="Devices repaired"
+            />
             <StatTile value="2022" label="Trusted since" />
             <StatTile value="3 ways" label="Cash · Airtime · Data" />
             <StatTile value="Mon–Sat" label="9am – 7pm" />
@@ -393,7 +408,12 @@ function StatTile({ value, label }: { value: React.ReactNode; label: string }) {
 
 /* ------------------------------------------------------------- Before & after */
 
-const REPAIRS: { device: string; job: string; before: string; after: string }[] = [
+const REPAIRS: {
+  device: string;
+  job: string;
+  before: string;
+  after: string;
+}[] = [
   {
     device: "iPhone 13 Pro Max",
     job: "Back-glass replacement",
@@ -420,7 +440,7 @@ function BeforeAfter() {
             Before &amp; after
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-500">
-            Real repairs from our bench — shattered backs brought right back to
+            Real repairs from our bench, shattered backs brought right back to
             brand-new.
           </p>
         </Reveal>
@@ -537,14 +557,17 @@ function RepairCTA() {
                   Cracked screen? Dead battery?
                 </h2>
                 <p className="mt-3 text-base leading-7 text-slate-500">
-                  Bring it to Techmykel in Abakaliki and let the experts handle it.
+                  Bring it to Techmykel in Abakaliki and let the experts handle
+                  it.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-slate-500">
                   <span className="inline-flex items-center gap-1.5">
-                    <Clock size={16} className="text-brand" /> Mon–Sat, 9am – 7pm
+                    <Clock size={16} className="text-brand" /> Mon–Sat, 9am –
+                    7pm
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <MapPin size={16} className="text-brand" /> Abakaliki, Ebonyi State
+                    <MapPin size={16} className="text-brand" /> Abakaliki,
+                    Ebonyi State
                   </span>
                 </div>
               </div>

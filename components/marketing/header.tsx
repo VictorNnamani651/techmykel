@@ -24,17 +24,23 @@ export function MarketingHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll while the mobile menu is open.
+  // Lock body scroll while the mobile menu is open, and close it on Escape.
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
   const solid = scrolled || open;
 
   return (
+    <>
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
@@ -96,11 +102,44 @@ export function MarketingHeader() {
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
+    </header>
 
-      {/* Mobile drawer */}
-      {open && (
-        <div className="border-t border-slate-200 bg-white px-4 py-4 md:hidden">
-          <nav className="flex flex-col">
+      {/* Mobile drawer: dimmed backdrop + panel sliding in from the right.
+          Rendered as a sibling of <header> (not a child) on purpose: the header
+          uses backdrop-blur, and an ancestor with a backdrop-filter becomes the
+          containing block for position:fixed descendants — which would collapse
+          this full-height panel to the header's box. `inert` (instead of
+          aria-hidden) keeps the closed panel unfocusable without trapping focus
+          inside a hidden subtree. Both stay mounted so open/close can animate. */}
+      <div className="md:hidden" inert={open ? undefined : true}>
+        <div
+          onClick={() => setOpen(false)}
+          className={cn(
+            "fixed inset-0 z-60 bg-slate-900/50 backdrop-blur-sm transition-opacity duration-300",
+            open ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className={cn(
+            "fixed inset-y-0 right-0 z-70 flex w-[78%] max-w-xs flex-col bg-white shadow-2xl transition-transform duration-300 ease-out",
+            open ? "translate-x-0" : "translate-x-full",
+          )}
+        >
+          <div className="flex h-16 items-center justify-between border-b border-slate-200 px-4">
+            <Logo href="/" />
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setOpen(false)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-700 transition-colors hover:bg-slate-100"
+            >
+              <X size={22} />
+            </button>
+          </div>
+          <nav className="flex flex-col px-4 py-4">
             {NAV.map((item) => (
               <a
                 key={item.href}
@@ -112,7 +151,7 @@ export function MarketingHeader() {
               </a>
             ))}
           </nav>
-          <div className="mt-3 flex flex-col gap-2 border-t border-slate-100 pt-4">
+          <div className="mt-auto flex flex-col gap-2 border-t border-slate-100 px-4 py-4">
             <Link
               href="/login"
               onClick={() => setOpen(false)}
@@ -129,7 +168,7 @@ export function MarketingHeader() {
             </Link>
           </div>
         </div>
-      )}
-    </header>
+      </div>
+    </>
   );
 }
