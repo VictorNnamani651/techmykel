@@ -50,12 +50,7 @@ export function MarketingHeader() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Logo
-          href="/"
-          onBrand={!solid}
-          altMarkSrc="/techmykel-mark-white.png"
-          showAltMark={!solid}
-        />
+        <Logo href="/" onBrand={!solid} />
 
         <nav className="hidden items-center gap-7 md:flex">
           {NAV.map((item) => (
