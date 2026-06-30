@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand (from the Techmykel flyer + mockups) */
-  --color-brand: #004ac6;
-  --color-brand-dark: #003ea8;
-  --color-brand-light: #2563eb;
+  /* Brand (matched to the Techmykel logo + marketing material: pure indigo) */
+  --color-brand: #0005bf;
+  --color-brand-dark: #0004a0;
+  --color-brand-light: #2533e6;
   --color-gold: #f5b301;
 
   /* Semantic status colors */

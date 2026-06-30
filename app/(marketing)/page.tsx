@@ -59,7 +59,7 @@ export default function LandingPage() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#00337f] text-white">
+    <section className="relative overflow-hidden bg-[#00037f] text-white">
       {/* Background photo: real Techmykel-style repair close-up */}
       <Image
         src="/marketing/hero.png"
@@ -70,11 +70,11 @@ function Hero() {
         className="absolute inset-0 object-cover object-center"
       />
       {/* Brand gradient overlay keeps text AA-legible over the photo */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#002b78]/97 via-[#003ea8]/92 to-[#00337f]/70" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#001b45]/70 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#000378]/97 via-[#0004a8]/92 to-[#00037f]/70" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#000245]/70 via-transparent to-transparent" />
       {/* Decorative aurora blobs */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="mk-blob mk-float absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#2563eb]/70" />
+        <div className="mk-blob mk-float absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#2533e6]/70" />
         <div className="mk-blob mk-float-slow absolute -right-16 top-20 h-80 w-80 rounded-full bg-[#f5b301]/30" />
       </div>
       {/* Dot texture */}
@@ -336,7 +336,7 @@ function TrustProof() {
   return (
     <section
       id="trust"
-      className="relative overflow-hidden bg-gradient-to-br from-[#004ac6] to-[#00337f] py-20 text-white sm:py-24"
+      className="relative overflow-hidden bg-gradient-to-br from-[#0005bf] to-[#00037f] py-20 text-white sm:py-24"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-10"
@@ -599,7 +599,7 @@ function RepairCTA() {
 
 function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#0052d6] via-[#004ac6] to-[#00337f] py-20 text-white sm:py-28">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#0006d6] via-[#0005bf] to-[#00037f] py-20 text-white sm:py-28">
       <div
         className="pointer-events-none absolute inset-0 opacity-15"
         style={dotGrid("#ffffff")}
