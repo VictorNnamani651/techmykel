@@ -25,6 +25,7 @@ export function LogoMark({
           src={src}
           alt="Techmykel logo"
           fill
+          sizes={`${px}px`}
           priority
           className={cn(
             "object-contain transition-opacity duration-300",
@@ -35,6 +36,7 @@ export function LogoMark({
           src={altSrc}
           alt=""
           fill
+          sizes={`${px}px`}
           priority
           className={cn(
             "object-contain transition-opacity duration-300",
