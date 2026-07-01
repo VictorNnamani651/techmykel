@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Geist } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/toaster";
 import "./globals.css";
 
+// Geist = display/headings; Inter = body/functional text (per docs DESIGN.md).
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -30,7 +36,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${inter.variable} h-full antialiased`}
+    >
       <body className="min-h-full">
         {/* With JS disabled the scroll-reveal observer never runs, so force any
             reveal elements visible (progressive enhancement). */}

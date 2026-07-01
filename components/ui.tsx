@@ -188,7 +188,7 @@ export function StatCard({
         <span className="text-xs font-medium text-slate-500">{label}</span>
         <Icon name={icon} className="text-[20px] text-slate-300" />
       </div>
-      <span className="text-2xl font-semibold text-slate-900">{value}</span>
+      <span className="font-display text-2xl font-semibold text-slate-900">{value}</span>
       <span className={cn("absolute bottom-0 left-0 h-1 w-1/3", bar[accent])} />
     </Card>
   );
