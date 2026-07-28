@@ -1,6 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+
+function subscribeReducedMotion(onChange: () => void) {
+  const mql = window.matchMedia(REDUCED_MOTION);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+
+// Reads the media query without setState-in-effect. The server snapshot is
+// `false` (no window), so SSR renders the animated path and the real preference
+// takes over at hydration.
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false,
+  );
+}
 
 // Counts from 0 up to `value` once scrolled into view. Honors prefers-reduced-motion
 // by jumping straight to the final value.
@@ -17,18 +36,11 @@ export function CountUp({
 }) {
   const ref = useRef<HTMLSpanElement | null>(null);
   const [display, setDisplay] = useState(0);
+  const reduce = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-
-    const reduce =
-      typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
-      setDisplay(value);
-      return;
-    }
+    if (!el || reduce) return;
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -48,12 +60,15 @@ export function CountUp({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [value, duration]);
+  }, [value, duration, reduce]);
+
+  // Reduced motion jumps straight to the final value — derived, never stored.
+  const shown = reduce ? value : display;
 
   return (
     <span ref={ref}>
       {prefix}
-      {display.toLocaleString("en-NG")}
+      {shown.toLocaleString("en-NG")}
       {suffix}
     </span>
   );

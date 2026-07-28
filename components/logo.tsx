@@ -25,6 +25,7 @@ export function LogoMark({
           src={src}
           alt="Techmykel logo"
           fill
+          sizes={`${px}px`}
           priority
           className={cn(
             "object-contain transition-opacity duration-300",
@@ -35,6 +36,7 @@ export function LogoMark({
           src={altSrc}
           alt=""
           fill
+          sizes={`${px}px`}
           priority
           className={cn(
             "object-contain transition-opacity duration-300",
@@ -58,37 +60,55 @@ export function LogoMark({
   );
 }
 
+// Full Techmykel logo lockup (mark + wordmark), trimmed to the artwork.
+const LOGO_BLUE = "/techmykel-logo-blue.png";
+const LOGO_WHITE = "/techmykel-logo-white.png";
+const LOGO_W = 573;
+const LOGO_H = 153;
+
 export function Logo({
   href = "/",
   size = "md",
-  showWordmark = true,
   onBrand = false,
-  altMarkSrc,
-  showAltMark = false,
 }: {
   href?: string;
   size?: "sm" | "md";
-  showWordmark?: boolean;
+  /** Render the white lockup (for brand/dark backgrounds) instead of blue. */
   onBrand?: boolean;
-  altMarkSrc?: string;
-  showAltMark?: boolean;
 }) {
-  const px = size === "sm" ? 28 : 36;
-  const word = size === "sm" ? "text-lg" : "text-xl";
+  const h = size === "sm" ? 28 : 36;
+  const w = Math.round((h * LOGO_W) / LOGO_H);
+  // Both colourways are kept in the DOM and crossfaded via opacity so the
+  // marketing header can transition blue↔white in sync with its background
+  // (duration-300) without any swap flash. Static callers just show blue.
   return (
-    <Link href={href} className="inline-flex items-center gap-2">
-      <LogoMark px={px} altSrc={altMarkSrc} showAlt={showAltMark} />
-      {showWordmark && (
-        <span
-          className={cn(
-            "font-bold tracking-tight",
-            word,
-            onBrand ? "text-white" : "text-brand",
-          )}
-        >
-          Techmykel
-        </span>
-      )}
+    <Link
+      href={href}
+      className="relative inline-block shrink-0"
+      style={{ width: w, height: h }}
+    >
+      <Image
+        src={LOGO_BLUE}
+        alt="Techmykel"
+        fill
+        sizes={`${w}px`}
+        priority
+        className={cn(
+          "object-contain transition-opacity duration-300",
+          onBrand ? "opacity-0" : "opacity-100",
+        )}
+      />
+      <Image
+        src={LOGO_WHITE}
+        alt=""
+        fill
+        sizes={`${w}px`}
+        priority
+        className={cn(
+          "object-contain transition-opacity duration-300",
+          onBrand ? "opacity-100" : "opacity-0",
+        )}
+      />
     </Link>
   );
 }
