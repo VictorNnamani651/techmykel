@@ -2,15 +2,15 @@ import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-// Social-share (Open Graph) image for the landing page — what shows when the
-// link is pasted into WhatsApp / Facebook. Built from the Techmykel logo mark.
+// Social-share (Open Graph) image for /refer — what shows when the link is
+// pasted into WhatsApp / Facebook. Built from the Techmykel logo mark.
 //
-// WhatsApp is how a local repair shop actually gets passed around, so this card
-// is the first impression for most visitors. It sells the repairs, not the
-// referral programme — /refer has its own card (ADR-0009).
+// This file must exist even though / has one: openGraph fields inherit into
+// nested segments, so without it /refer would silently share the repair-business
+// card instead of the programme's (ADR-0009).
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Techmykel — Phone repairs in Abakaliki";
+export const alt = "Techmykel — Refer friends, get paid";
 
 export default async function OpengraphImage() {
   const markData = await readFile(
@@ -62,7 +62,7 @@ export default async function OpengraphImage() {
           }}
         >
           <span style={{ fontSize: "94px", fontWeight: 700, lineHeight: 1.04 }}>
-            Your phone,
+            Refer friends.
           </span>
           <span
             style={{
@@ -72,7 +72,7 @@ export default async function OpengraphImage() {
               color: "#f5b301",
             }}
           >
-            fixed right.
+            Get paid.
           </span>
         </div>
 
@@ -85,7 +85,7 @@ export default async function OpengraphImage() {
             color: "rgba(255,255,255,0.85)",
           }}
         >
-          Screens · Batteries · Water damage · Charging ports
+          Earn cash, airtime or data for every phone you send to Techmykel.
         </span>
         <span
           style={{
@@ -94,7 +94,7 @@ export default async function OpengraphImage() {
             color: "rgba(255,255,255,0.6)",
           }}
         >
-          Free diagnosis · No fix, no fee · Abakaliki, Ebonyi State
+          Phone repairs & referral rewards · Abakaliki
         </span>
       </div>
     ),
