@@ -2,18 +2,52 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { cn } from "@/components/ui";
 
-const NAV = [
-  { href: "#how", label: "How it works" },
-  { href: "#earn", label: "Rewards" },
-  { href: "#trust", label: "Repairs" },
-  { href: "#repair", label: "Contact" },
-];
+const WHATSAPP = "https://wa.me/2348142778625";
+
+// The header renders on both marketing routes, but its nav is same-page anchors
+// and its primary CTA differs by audience (ADR-0009): `/` sells repairs and
+// converts to WhatsApp; `/refer` sells the programme and converts to /register.
+// Driven off usePathname() rather than a nested layout — a layout under
+// (marketing) would nest inside it and render a second header.
+type HeaderConfig = {
+  nav: { href: string; label: string }[];
+  cta: { href: string; label: string; external?: boolean };
+  // Whether this route's hero is a dark field. Drives the unscrolled text
+  // colour: white over /'s blue photo hero, slate over /refer's light one.
+  darkHero: boolean;
+};
+
+const REPAIRS_CONFIG: HeaderConfig = {
+  nav: [
+    { href: "#services", label: "Services" },
+    { href: "#work", label: "Our work" },
+    { href: "#trust", label: "Why us" },
+    { href: "#repair", label: "Contact" },
+  ],
+  cta: { href: WHATSAPP, label: "WhatsApp us", external: true },
+  darkHero: true,
+};
+
+const REFER_CONFIG: HeaderConfig = {
+  nav: [
+    { href: "#how", label: "How it works" },
+    { href: "#earn", label: "Rewards" },
+    { href: "#faq", label: "FAQ" },
+  ],
+  cta: { href: "/register", label: "Get started" },
+  darkHero: false,
+};
 
 export function MarketingHeader() {
+  const pathname = usePathname();
+  const { nav: NAV, cta, darkHero } = pathname?.startsWith("/refer")
+    ? REFER_CONFIG
+    : REPAIRS_CONFIG;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -38,6 +72,9 @@ export function MarketingHeader() {
   }, [open]);
 
   const solid = scrolled || open;
+  // Text colour follows the field behind the header, not just scroll state:
+  // white would be invisible over /refer's light hero.
+  const onDark = darkHero && !solid;
 
   return (
     <>
@@ -50,7 +87,7 @@ export function MarketingHeader() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Logo href="/" onBrand={!solid} />
+        <Logo href="/" onBrand={onDark} />
 
         <nav className="hidden items-center gap-7 md:flex">
           {NAV.map((item) => (
@@ -59,9 +96,9 @@ export function MarketingHeader() {
               href={item.href}
               className={cn(
                 "text-sm font-medium transition-colors",
-                solid
-                  ? "text-slate-600 hover:text-brand"
-                  : "text-white/80 hover:text-white",
+                onDark
+                  ? "text-white/80 hover:text-white"
+                  : "text-slate-600 hover:text-brand",
               )}
             >
               {item.label}
@@ -74,19 +111,30 @@ export function MarketingHeader() {
             href="/login"
             className={cn(
               "rounded-lg px-3 py-2 text-sm font-semibold transition-colors",
-              solid
-                ? "text-brand hover:bg-brand/5"
-                : "text-white hover:bg-white/10",
+              onDark
+                ? "text-white hover:bg-white/10"
+                : "text-brand hover:bg-brand/5",
             )}
           >
             Sign in
           </Link>
-          <Link
-            href="/register"
-            className="rounded-lg bg-gold px-4 py-2 text-sm font-bold text-brand-dark shadow-sm transition hover:brightness-105 active:scale-[0.98]"
-          >
-            Get started
-          </Link>
+          {cta.external ? (
+            <a
+              href={cta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-bold text-brand-dark shadow-sm transition hover:brightness-105 active:scale-[0.98]"
+            >
+              {cta.label}
+            </a>
+          ) : (
+            <Link
+              href={cta.href}
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-bold text-brand-dark shadow-sm transition hover:brightness-105 active:scale-[0.98]"
+            >
+              {cta.label}
+            </Link>
+          )}
         </div>
 
         <button
@@ -96,7 +144,7 @@ export function MarketingHeader() {
           onClick={() => setOpen((v) => !v)}
           className={cn(
             "inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors md:hidden",
-            solid ? "text-slate-700 hover:bg-slate-100" : "text-white hover:bg-white/10",
+            onDark ? "text-white hover:bg-white/10" : "text-slate-700 hover:bg-slate-100",
           )}
         >
           {open ? <X size={22} /> : <Menu size={22} />}
@@ -159,13 +207,25 @@ export function MarketingHeader() {
             >
               Sign in
             </Link>
-            <Link
-              href="/register"
-              onClick={() => setOpen(false)}
-              className="rounded-lg bg-gold px-4 py-2.5 text-center text-sm font-bold text-brand-dark shadow-sm"
-            >
-              Get started — it&apos;s free
-            </Link>
+            {cta.external ? (
+              <a
+                href={cta.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="rounded-lg bg-gold px-4 py-2.5 text-center text-sm font-bold text-brand-dark shadow-sm"
+              >
+                {cta.label}
+              </a>
+            ) : (
+              <Link
+                href={cta.href}
+                onClick={() => setOpen(false)}
+                className="rounded-lg bg-gold px-4 py-2.5 text-center text-sm font-bold text-brand-dark shadow-sm"
+              >
+                {cta.label}
+              </Link>
+            )}
           </div>
         </div>
       </div>

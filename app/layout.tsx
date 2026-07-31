@@ -25,11 +25,17 @@ const siteUrl =
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : "http://localhost:3000");
 
+// Techmykel is a phone-repair business first; Refer & Earn is a secondary offer
+// (ADR-0009). The default title is therefore the business, and every other route
+// — /refer, the referrer app, admin — appends to it via the template.
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Techmykel — Referral Rewards",
+  title: {
+    default: "Techmykel — Phone Repairs in Abakaliki",
+    template: "%s · Techmykel",
+  },
   description:
-    "Refer customers to Techmykel phone repair and earn rewards — cash, airtime, or data.",
+    "Screen, battery, water-damage and charging-port repairs in Abakaliki, Ebonyi State. Free diagnosis, quote before we start, no fix no fee. Trusted since 2022.",
 };
 
 export default function RootLayout({

@@ -12,43 +12,27 @@ export function MarketingFooter() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Logo href="/" />
             <p className="mt-3 max-w-xs text-sm leading-6 text-slate-500">
-              Phone repairs &amp; referral rewards in Abakaliki, Ebonyi State.
-              Refer friends, earn cash, airtime or data.
+              Phone repairs in Abakaliki, Ebonyi State. Screens, batteries, water
+              damage and more — fixed properly since 2022.
             </p>
           </div>
 
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Get started
-            </h3>
-            <ul className="mt-4 space-y-2.5 text-sm">
-              <li>
-                <Link href="/register" className="text-slate-600 hover:text-brand">
-                  Create an account
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="text-slate-600 hover:text-brand">
-                  Sign in
-                </Link>
-              </li>
-              <li>
-                <a href="#how" className="text-slate-600 hover:text-brand">
-                  How it works
-                </a>
-              </li>
-            </ul>
-          </div>
-
+          {/* Links are absolute, never bare fragments: this footer renders on
+              both / and /refer, and their sections differ (ADR-0009). */}
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Repairs
             </h3>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <a href="#trust" className="text-slate-600 hover:text-brand">
+                <Link href="/#services" className="text-slate-600 hover:text-brand">
                   Our services
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/#work" className="text-slate-600 hover:text-brand">
+                  Our work
+                </Link>
               </li>
               <li>
                 <a href={WHATSAPP} className="text-slate-600 hover:text-brand">
@@ -59,6 +43,29 @@ export function MarketingFooter() {
                 <a href={TEL} className="text-slate-600 hover:text-brand">
                   Call us
                 </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Refer &amp; Earn
+            </h3>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              <li>
+                <Link href="/refer" className="text-slate-600 hover:text-brand">
+                  How it works
+                </Link>
+              </li>
+              <li>
+                <Link href="/register" className="text-slate-600 hover:text-brand">
+                  Create an account
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="text-slate-600 hover:text-brand">
+                  Sign in
+                </Link>
               </li>
             </ul>
           </div>
