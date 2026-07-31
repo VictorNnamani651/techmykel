@@ -22,6 +22,10 @@ _Avoid_: Lead, client, account
 
 ## Core terms
 
+**Refer & Earn**:
+The public name of the referral programme — the marketing surface where a prospective Referrer learns about it and signs up. Deliberately a secondary offer: discoverable, never the business's leading message.
+_Avoid_: Affiliate programme, partner programme, rewards scheme
+
 **Referral**:
 A claim by a Referrer that they sent a specific Referred Customer to the business. Created by the Referrer with the referred customer's name and phone number, then verified and progressed by the Admin. Carries a status through its lifecycle and, once successful, grants exactly one reward.
 _Avoid_: Lead, introduction
