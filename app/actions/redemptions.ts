@@ -7,27 +7,10 @@ import { redemptions, referrals, users } from "@/lib/db/schema";
 import { requireReferrer } from "@/lib/dal";
 import { redeemSchema } from "@/lib/validation";
 import { writeAudit } from "@/lib/audit";
-import { notify } from "@/lib/notifications";
+import { formatNgPhone } from "@/lib/phone";
+import { notifyAdmins } from "@/lib/notifications";
 
 export type RedeemState = { error?: string } | undefined;
-
-async function notifyAdmins(message: string, entityId: string) {
-  const admins = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.role, "admin"));
-  await Promise.all(
-    admins.map((a) =>
-      notify({
-        userId: a.id,
-        type: "admin.redemption_requested",
-        entityType: "redemption",
-        entityId,
-        message,
-      }),
-    ),
-  );
-}
 
 export async function redeemReferral(
   _prev: RedeemState,
@@ -86,10 +69,31 @@ export async function redeemReferral(
       amount: referral.rewardAmount,
     },
   });
-  await notifyAdmins(
-    `Redemption requested (${parsed.data.rewardType}) for ${referral.referredName}.`,
-    created.id,
-  );
+  const [requester] = await db
+    .select({ fullName: users.fullName, phone: users.phone })
+    .from(users)
+    .where(eq(users.id, session.userId))
+    .limit(1);
+  const asker = requester
+    ? `${requester.fullName} (${formatNgPhone(requester.phone)})`
+    : "A referrer";
+  const amount = referral.rewardAmount;
+
+  await notifyAdmins({
+    type: "admin.redemption_requested",
+    entityType: "redemption",
+    entityId: created.id,
+    message: `Redemption requested (${parsed.data.rewardType}) for ${referral.referredName}.`,
+    alertText: [
+      "NEW REWARD REQUEST",
+      "",
+      `${asker} wants to collect a reward:`,
+      "",
+      `Reward type: ${parsed.data.rewardType}`,
+      ...(amount ? [`Amount: NGN ${amount.toLocaleString("en-NG")}`] : []),
+      `For referring: ${referral.referredName}`,
+    ].join("\n"),
+  });
 
   redirect("/redemptions?toast=redemption_requested");
 }
