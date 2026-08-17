@@ -76,6 +76,10 @@ _Avoid_: Payout, bonus, credit
 A Referrer's request to receive the Reward for a Successful Referral, naming the chosen Reward Type. At most one per referral. The Admin fulfils it manually (pays cash / sends airtime / sends data) outside the system.
 _Avoid_: Claim, withdrawal, cash-out
 
+**Reward Destination**:
+Where a Reward is actually sent, supplied by the Referrer when they redeem. For cash it is a bank name, account number and account name; for airtime and data it is a phone number, which need not be the Referrer's account phone. Held on the Referrer as reusable defaults and copied onto the Redemption as an unchangeable record of where that specific Reward went.
+_Avoid_: Payout details, bank details, payment info
+
 **Requested**:
 A Redemption the Referrer has submitted; the type is locked and the Admin has been notified. Awaiting payout.
 

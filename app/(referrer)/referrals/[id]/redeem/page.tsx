@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/dal";
 import { getReferralForReferrer } from "@/lib/queries";
 import { BackHeader } from "@/components/back-header";
 import { naira } from "@/components/ui";
+import { formatNgPhone } from "@/lib/phone";
 import { RedeemForm } from "./redeem-form";
 
 export const metadata = { title: "Redeem reward — Techmykel" };
@@ -33,7 +34,15 @@ export default async function RedeemPage({
           The amount is the same — pick how you&apos;d like it delivered.
         </p>
       </div>
-      <RedeemForm referralId={id} />
+      <RedeemForm
+        referralId={id}
+        defaults={{
+          bankName: user.destinationBankName,
+          accountNumber: user.destinationAccountNumber,
+          accountName: user.destinationAccountName,
+        }}
+        registeredPhone={formatNgPhone(user.phone)}
+      />
     </div>
   );
 }

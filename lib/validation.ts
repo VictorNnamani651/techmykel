@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isValidNgPhone, normalizeNgPhone } from "@/lib/phone";
+import { NIGERIAN_BANKS } from "@/lib/banks";
 
 // Validates an NG phone and normalizes the output to E.164 "+234…".
 export const phoneField = z
@@ -37,6 +38,37 @@ export const verifyReferralSchema = z.object({
     .positive({ message: "Enter a reward amount greater than 0." }),
 });
 
-export const redeemSchema = z.object({
-  rewardType: z.enum(["cash", "airtime", "data"]),
+// Which Reward Destination fields are required depends on the Reward Type, so
+// this is a discriminated union rather than a DB CHECK (ADR-0011) - the errors
+// need to land on individual form fields.
+const bankField = z.enum(NIGERIAN_BANKS, {
+  message: "Choose your bank from the list.",
 });
+
+// NUBAN account numbers are exactly 10 digits.
+const accountNumberField = z
+  .string()
+  .trim()
+  .regex(/^\d{10}$/, { message: "Account number must be exactly 10 digits." });
+
+const accountNameField = z
+  .string()
+  .trim()
+  .min(2, { message: "Enter the account name exactly as your bank has it." });
+
+export const redeemSchema = z.discriminatedUnion("rewardType", [
+  z.object({
+    rewardType: z.literal("cash"),
+    destinationBankName: bankField,
+    destinationAccountNumber: accountNumberField,
+    destinationAccountName: accountNameField,
+  }),
+  z.object({
+    rewardType: z.literal("airtime"),
+    destinationPhone: phoneField,
+  }),
+  z.object({
+    rewardType: z.literal("data"),
+    destinationPhone: phoneField,
+  }),
+]);
