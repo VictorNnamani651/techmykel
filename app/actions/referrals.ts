@@ -6,30 +6,13 @@ import { db } from "@/lib/db";
 import { referrals, users } from "@/lib/db/schema";
 import { requireReferrer } from "@/lib/dal";
 import { referralSchema } from "@/lib/validation";
+import { formatNgPhone } from "@/lib/phone";
 import { writeAudit } from "@/lib/audit";
-import { notify } from "@/lib/notifications";
+import { notifyAdmins } from "@/lib/notifications";
 
 export type ReferralFormState =
   | { error?: string; fieldErrors?: Record<string, string[] | undefined> }
   | undefined;
-
-async function notifyAdmins(message: string, entityId: string) {
-  const admins = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.role, "admin"));
-  await Promise.all(
-    admins.map((a) =>
-      notify({
-        userId: a.id,
-        type: "admin.referral_created",
-        entityType: "referral",
-        entityId,
-        message,
-      }),
-    ),
-  );
-}
 
 export async function createReferral(
   _prev: ReferralFormState,
@@ -103,7 +86,31 @@ export async function createReferral(
     toState: "unverified",
     metadata: { referredName, referredPhone },
   });
-  await notifyAdmins(`New referral submitted: ${referredName}.`, created.id);
+  // Who referred, for the alert body. The in-app `message` stays one line
+  // because the notifications list renders it as a single paragraph.
+  const [referrer] = await db
+    .select({ fullName: users.fullName, phone: users.phone })
+    .from(users)
+    .where(eq(users.id, session.userId))
+    .limit(1);
+  const who = referrer
+    ? `${referrer.fullName} (${formatNgPhone(referrer.phone)})`
+    : "A referrer";
+
+  await notifyAdmins({
+    type: "admin.referral_created",
+    entityType: "referral",
+    entityId: created.id,
+    message: `New referral submitted: ${referredName}.`,
+    alertText: [
+      "NEW REFERRAL REQUEST",
+      "",
+      `${who} submitted a referral request:`,
+      "",
+      `Referred customer name: ${referredName}`,
+      `Referred customer number: ${formatNgPhone(referredPhone)}`,
+    ].join("\n"),
+  });
 
   redirect(`/referrals/${created.id}?toast=referral_created`);
 }
