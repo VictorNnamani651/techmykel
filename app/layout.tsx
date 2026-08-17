@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Geist, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/toaster";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 // Geist = display/headings; Inter = body/functional text (per docs DESIGN.md).
@@ -17,13 +18,8 @@ const inter = Inter({
 });
 
 // Absolute base for resolving OG/Twitter image URLs (needed for WhatsApp/Facebook
-// link previews). Override with NEXT_PUBLIC_SITE_URL once a custom domain is live;
-// otherwise falls back to the Vercel production URL, then localhost in dev.
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:3000");
+// link previews). See lib/site-url.ts for why this is not inlined here.
+const siteUrl = getSiteUrl();
 
 // Techmykel is a phone-repair business first; Refer & Earn is a secondary offer
 // (ADR-0009). The default title is therefore the business, and every other route

@@ -3,6 +3,7 @@ import { and, eq, isNull, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { notifications, users } from "@/lib/db/schema";
 import { getAlertSender } from "@/lib/alerts";
+import { getSiteUrl as siteUrl } from "@/lib/site-url";
 
 interface NotificationInput {
   userId: string;
@@ -18,17 +19,6 @@ type AdminNotificationInput = Omit<NotificationInput, "userId"> & {
   // here and never in `message`. Omit the link - notifyAdmins() appends it.
   alertText?: string;
 };
-
-// Same resolution order as app/layout.tsx, so alert deep-links point at the
-// deployed site rather than localhost in production.
-function siteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : "http://localhost:3000")
-  );
-}
 
 // Deep-link straight to the screen where the admin acts on this, so the alert is
 // one tap from done. Redemptions have no per-id admin route, only the list.
