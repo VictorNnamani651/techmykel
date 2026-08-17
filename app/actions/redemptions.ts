@@ -10,7 +10,9 @@ import { writeAudit } from "@/lib/audit";
 import { formatNgPhone } from "@/lib/phone";
 import { notifyAdmins } from "@/lib/notifications";
 
-export type RedeemState = { error?: string } | undefined;
+export type RedeemState =
+  | { error?: string; fieldErrors?: Record<string, string[] | undefined> }
+  | undefined;
 
 export async function redeemReferral(
   _prev: RedeemState,
@@ -19,8 +21,30 @@ export async function redeemReferral(
   const session = await requireReferrer();
   const referralId = String(formData.get("referralId") ?? "");
 
-  const parsed = redeemSchema.safeParse({ rewardType: formData.get("rewardType") });
-  if (!parsed.success) return { error: "Please choose how you'd like to be paid." };
+  // Only the fields for the chosen reward type are rendered, so unmounted
+  // inputs arrive as null and the discriminated union ignores them.
+  const parsed = redeemSchema.safeParse({
+    rewardType: formData.get("rewardType"),
+    destinationBankName: formData.get("destinationBankName") ?? undefined,
+    destinationAccountNumber: formData.get("destinationAccountNumber") ?? undefined,
+    destinationAccountName: formData.get("destinationAccountName") ?? undefined,
+    destinationPhone: formData.get("destinationPhone") ?? undefined,
+  });
+  if (!parsed.success) {
+    return { fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+  const input = parsed.data;
+
+  // Reward Destination snapshot (ADR-0011): frozen onto this redemption so the
+  // record of where money went survives the referrer editing their defaults.
+  const destination =
+    input.rewardType === "cash"
+      ? {
+          destinationBankName: input.destinationBankName,
+          destinationAccountNumber: input.destinationAccountNumber,
+          destinationAccountName: input.destinationAccountName,
+        }
+      : { destinationPhone: input.destinationPhone };
 
   const [referral] = await db
     .select()
@@ -50,10 +74,23 @@ export async function redeemReferral(
   try {
     [created] = await db
       .insert(redemptions)
-      .values({ referralId, rewardType: parsed.data.rewardType })
+      .values({ referralId, rewardType: input.rewardType, ...destination })
       .returning({ id: redemptions.id });
   } catch {
     return { error: "This reward has already been redeemed." };
+  }
+
+  // Reuse next time. Bank details only: saving the phone would turn a one-off
+  // "send it to my friend" into the silent default for every future reward.
+  if (input.rewardType === "cash") {
+    await db
+      .update(users)
+      .set({
+        destinationBankName: input.destinationBankName,
+        destinationAccountNumber: input.destinationAccountNumber,
+        destinationAccountName: input.destinationAccountName,
+      })
+      .where(eq(users.id, session.userId));
   }
 
   await writeAudit({
@@ -65,7 +102,7 @@ export async function redeemReferral(
     toState: "requested",
     metadata: {
       referralId,
-      rewardType: parsed.data.rewardType,
+      rewardType: input.rewardType,
       amount: referral.rewardAmount,
     },
   });
@@ -83,15 +120,29 @@ export async function redeemReferral(
     type: "admin.redemption_requested",
     entityType: "redemption",
     entityId: created.id,
-    message: `Redemption requested (${parsed.data.rewardType}) for ${referral.referredName}.`,
+    message: `Redemption requested (${input.rewardType}) for ${referral.referredName}.`,
     alertText: [
       "NEW REWARD REQUEST",
       "",
       `${asker} wants to collect a reward:`,
       "",
-      `Reward type: ${parsed.data.rewardType}`,
+      `Reward type: ${input.rewardType}`,
       ...(amount ? [`Amount: NGN ${amount.toLocaleString("en-NG")}`] : []),
       `For referring: ${referral.referredName}`,
+      "",
+      ...(input.rewardType === "cash"
+        ? [
+            "Send the cash to:",
+            `Bank: ${input.destinationBankName}`,
+            `Account number: ${input.destinationAccountNumber}`,
+            `Account name: ${input.destinationAccountName}`,
+          ]
+        : [
+            `Send it to: ${formatNgPhone(input.destinationPhone)}`,
+            ...(input.destinationPhone === requester?.phone
+              ? []
+              : ["(NOT their registered number)"]),
+          ]),
     ].join("\n"),
   });
 

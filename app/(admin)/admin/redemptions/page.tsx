@@ -89,6 +89,48 @@ export default async function AdminRedemptionsPage({
                 </div>
               </div>
 
+              {/* Where the money actually goes. Shown for every status, not just
+                  requested, because the snapshot is the record of where a
+                  fulfilled payment went (ADR-0011). */}
+              {(r.destinationAccountNumber || r.destinationPhone) && (
+                <div className="mt-3 rounded-lg bg-slate-50 p-3 text-xs">
+                  {r.rewardType === "cash" ? (
+                    <dl className="space-y-1">
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-slate-500">Bank</dt>
+                        <dd className="truncate font-medium text-slate-900">
+                          {r.destinationBankName}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-slate-500">Account number</dt>
+                        <dd className="font-mono font-semibold text-slate-900">
+                          {r.destinationAccountNumber}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-slate-500">Account name</dt>
+                        <dd className="truncate font-medium text-slate-900">
+                          {r.destinationAccountName}
+                        </dd>
+                      </div>
+                    </dl>
+                  ) : (
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-500">Send to</span>
+                      <span className="font-semibold text-slate-900">
+                        {formatNgPhone(r.destinationPhone!)}
+                        {r.destinationPhone !== r.referrerPhone && (
+                          <span className="ml-1 font-normal text-amber-700">
+                            (not their own number)
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {r.status === "requested" && (
                 <div className="mt-3 border-t border-slate-100 pt-3">
                   <RedemptionActions redemptionId={r.id} />
