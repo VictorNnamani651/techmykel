@@ -7,6 +7,8 @@ import { referrals, users } from "@/lib/db/schema";
 import { hashSecret, verifySecret } from "@/lib/password";
 import { createAndSendOtp, verifyOtp } from "@/lib/otp";
 import { createSession, destroySession } from "@/lib/session";
+import { notifyAdmins } from "@/lib/notifications";
+import { formatNgPhone } from "@/lib/phone";
 import {
   loginSchema,
   otpSchema,
@@ -93,6 +95,24 @@ export async function verifyRegistration(
 
   if (!user.phoneVerifiedAt) {
     await db.update(users).set({ phoneVerifiedAt: new Date() }).where(eq(users.id, user.id));
+    // Alert on first successful verification, not on register(): an account is
+    // only real once the OTP is confirmed, and register() can be re-run for an
+    // unverified phone (the resume-registration path), which would alert twice.
+    await notifyAdmins({
+      type: "admin.referrer_registered",
+      entityType: "referrer",
+      entityId: user.id,
+      message: `New referrer signed up: ${user.fullName}.`,
+      alertText: [
+        "A NEW USER SIGNED UP",
+        "",
+        `Name: ${user.fullName}`,
+        `Number: ${formatNgPhone(user.phone)}`,
+        ...(user.convertedFromReferralId
+          ? ["", "This person was previously a referred customer."]
+          : []),
+      ].join("\n"),
+    });
   }
   await createSession(user.id, user.role);
   redirect(home(user.role));

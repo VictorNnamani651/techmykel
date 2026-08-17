@@ -7,27 +7,12 @@ import { redemptions, referrals, users } from "@/lib/db/schema";
 import { requireReferrer } from "@/lib/dal";
 import { redeemSchema } from "@/lib/validation";
 import { writeAudit } from "@/lib/audit";
-import { notify } from "@/lib/notifications";
+import { formatNgPhone } from "@/lib/phone";
+import { notifyAdmins } from "@/lib/notifications";
 
-export type RedeemState = { error?: string } | undefined;
-
-async function notifyAdmins(message: string, entityId: string) {
-  const admins = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.role, "admin"));
-  await Promise.all(
-    admins.map((a) =>
-      notify({
-        userId: a.id,
-        type: "admin.redemption_requested",
-        entityType: "redemption",
-        entityId,
-        message,
-      }),
-    ),
-  );
-}
+export type RedeemState =
+  | { error?: string; fieldErrors?: Record<string, string[] | undefined> }
+  | undefined;
 
 export async function redeemReferral(
   _prev: RedeemState,
@@ -36,8 +21,30 @@ export async function redeemReferral(
   const session = await requireReferrer();
   const referralId = String(formData.get("referralId") ?? "");
 
-  const parsed = redeemSchema.safeParse({ rewardType: formData.get("rewardType") });
-  if (!parsed.success) return { error: "Please choose how you'd like to be paid." };
+  // Only the fields for the chosen reward type are rendered, so unmounted
+  // inputs arrive as null and the discriminated union ignores them.
+  const parsed = redeemSchema.safeParse({
+    rewardType: formData.get("rewardType"),
+    destinationBankName: formData.get("destinationBankName") ?? undefined,
+    destinationAccountNumber: formData.get("destinationAccountNumber") ?? undefined,
+    destinationAccountName: formData.get("destinationAccountName") ?? undefined,
+    destinationPhone: formData.get("destinationPhone") ?? undefined,
+  });
+  if (!parsed.success) {
+    return { fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+  const input = parsed.data;
+
+  // Reward Destination snapshot (ADR-0011): frozen onto this redemption so the
+  // record of where money went survives the referrer editing their defaults.
+  const destination =
+    input.rewardType === "cash"
+      ? {
+          destinationBankName: input.destinationBankName,
+          destinationAccountNumber: input.destinationAccountNumber,
+          destinationAccountName: input.destinationAccountName,
+        }
+      : { destinationPhone: input.destinationPhone };
 
   const [referral] = await db
     .select()
@@ -67,10 +74,23 @@ export async function redeemReferral(
   try {
     [created] = await db
       .insert(redemptions)
-      .values({ referralId, rewardType: parsed.data.rewardType })
+      .values({ referralId, rewardType: input.rewardType, ...destination })
       .returning({ id: redemptions.id });
   } catch {
     return { error: "This reward has already been redeemed." };
+  }
+
+  // Reuse next time. Bank details only: saving the phone would turn a one-off
+  // "send it to my friend" into the silent default for every future reward.
+  if (input.rewardType === "cash") {
+    await db
+      .update(users)
+      .set({
+        destinationBankName: input.destinationBankName,
+        destinationAccountNumber: input.destinationAccountNumber,
+        destinationAccountName: input.destinationAccountName,
+      })
+      .where(eq(users.id, session.userId));
   }
 
   await writeAudit({
@@ -82,14 +102,49 @@ export async function redeemReferral(
     toState: "requested",
     metadata: {
       referralId,
-      rewardType: parsed.data.rewardType,
+      rewardType: input.rewardType,
       amount: referral.rewardAmount,
     },
   });
-  await notifyAdmins(
-    `Redemption requested (${parsed.data.rewardType}) for ${referral.referredName}.`,
-    created.id,
-  );
+  const [requester] = await db
+    .select({ fullName: users.fullName, phone: users.phone })
+    .from(users)
+    .where(eq(users.id, session.userId))
+    .limit(1);
+  const asker = requester
+    ? `${requester.fullName} (${formatNgPhone(requester.phone)})`
+    : "A referrer";
+  const amount = referral.rewardAmount;
+
+  await notifyAdmins({
+    type: "admin.redemption_requested",
+    entityType: "redemption",
+    entityId: created.id,
+    message: `Redemption requested (${input.rewardType}) for ${referral.referredName}.`,
+    alertText: [
+      "NEW REWARD REQUEST",
+      "",
+      `${asker} wants to collect a reward:`,
+      "",
+      `Reward type: ${input.rewardType}`,
+      ...(amount ? [`Amount: NGN ${amount.toLocaleString("en-NG")}`] : []),
+      `For referring: ${referral.referredName}`,
+      "",
+      ...(input.rewardType === "cash"
+        ? [
+            "Send the cash to:",
+            `Bank: ${input.destinationBankName}`,
+            `Account number: ${input.destinationAccountNumber}`,
+            `Account name: ${input.destinationAccountName}`,
+          ]
+        : [
+            `Send it to: ${formatNgPhone(input.destinationPhone)}`,
+            ...(input.destinationPhone === requester?.phone
+              ? []
+              : ["(NOT their registered number)"]),
+          ]),
+    ].join("\n"),
+  });
 
   redirect("/redemptions?toast=redemption_requested");
 }

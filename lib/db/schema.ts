@@ -50,6 +50,14 @@ export const users = pgTable("users", {
   // prior referred_phone. Logical reference to referrals.id (no hard FK to avoid
   // a circular constraint with referrals.referrer_id).
   convertedFromReferralId: uuid("converted_from_referral_id"),
+  // Reward Destination defaults (ADR-0011). Reusable so a referrer types their
+  // bank details once; each redemption still snapshots what it actually used.
+  // destinationPhone is NOT saved back here after a redemption - sending airtime
+  // to someone else's number is a one-off and must not become the default.
+  destinationBankName: text("destination_bank_name"),
+  destinationAccountNumber: text("destination_account_number"),
+  destinationAccountName: text("destination_account_name"),
+  destinationPhone: text("destination_phone"), // E.164
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -88,6 +96,14 @@ export const redemptions = pgTable(
     rewardType: rewardType("reward_type").notNull(),
     status: redemptionStatus("status").notNull().default("requested"),
     declineReason: text("decline_reason"),
+    // Reward Destination snapshot (ADR-0011): where THIS reward was sent, frozen
+    // at request time. Deliberately duplicates the users columns - do not
+    // normalise this away, it is the only record of where money actually went.
+    // Cash fills the three bank columns; airtime/data fills the phone.
+    destinationBankName: text("destination_bank_name"),
+    destinationAccountNumber: text("destination_account_number"),
+    destinationAccountName: text("destination_account_name"),
+    destinationPhone: text("destination_phone"), // E.164
     requestedAt: timestamp("requested_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

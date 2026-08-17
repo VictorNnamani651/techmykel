@@ -257,6 +257,12 @@ export async function listAllRedemptions(opts: {
       amount: referrals.rewardAmount,
       referrerName: users.fullName,
       referrerPhone: users.phone,
+      // Reward Destination snapshot (ADR-0011) - read from the redemption, never
+      // from users, so it shows where THIS payment was meant to go.
+      destinationBankName: redemptions.destinationBankName,
+      destinationAccountNumber: redemptions.destinationAccountNumber,
+      destinationAccountName: redemptions.destinationAccountName,
+      destinationPhone: redemptions.destinationPhone,
     })
     .from(redemptions)
     .innerJoin(referrals, eq(redemptions.referralId, referrals.id))
